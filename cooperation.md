@@ -92,7 +92,7 @@ issue를 기능 단위로 만들었다면 브랜치를 만들어야합니다. �
 
 깃허브 데스크탑에서 커밋을 하게되고 Summary를 작성할 때 #을 누르면
 
-![깃헙데탑](https://github.com/user-attachments/assets/9031a4c5-e4e6-48fc-a4fc-8e3fda18462b)
+![깃헙데탑](https://github.com/user-attachments/assets/368ac682-f7e0-4f17-a9df-3528d8366b29)
 
 
 이런 식으로 우리가 만든 이슈들을 보여주고, 선택하면 자동으로 커밋에 이슈번호가 등록됩니다.
