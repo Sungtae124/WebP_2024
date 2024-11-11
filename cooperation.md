@@ -50,7 +50,8 @@ Refactor : 코드 리펙토링 진행 시
 
 ### 이슈를 생성해봅시다.
 
-(스크린샷1)
+![이슈 등록](https://github.com/user-attachments/assets/1e1f5a41-8225-4397-910c-498f4beb5ed8)
+
 
 이슈 생성 화면에 들어가면 이렇게 나오는데 Title과 내용을 적고, Assignee와 Labels를 등록해주면 됩니다.
 
@@ -91,7 +92,8 @@ issue를 기능 단위로 만들었다면 브랜치를 만들어야합니다. �
 
 깃허브 데스크탑에서 커밋을 하게되고 Summary를 작성할 때 #을 누르면
 
-(스크린샷2)
+![깃헙데탑](https://github.com/user-attachments/assets/9031a4c5-e4e6-48fc-a4fc-8e3fda18462b)
+
 
 이런 식으로 우리가 만든 이슈들을 보여주고, 선택하면 자동으로 커밋에 이슈번호가 등록됩니다.
 
