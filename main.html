@@ -7,35 +7,17 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- 헤더: 타이틀 및 검색창 -->
     <header>
         <h1>Playmingo</h1>
         <input type="text" id="search-bar" placeholder="음악 검색...">
         <div id="suggestions"></div>
     </header>
 
-    <!-- 추천 목록 영역 -->
     <main>
         <section class="recommendation-grid">
-            <!-- 유사한 음악 추천 (2x2, 4:3 비율) -->
-            <div class="genre-recommendation large-box">유사한 음악 추천</div>
-
-            <!-- 추천 앨범 (2x1, 8:3 비율) -->
-            <div class="album-recommendation medium-box">추천 앨범 1</div>
-            <div class="album-recommendation medium-box">추천 앨범 2</div>
-
-            <!-- 추천 아티스트 (1x1, 4:3 비율) -->
-            <div class="artist-recommendation small-box">추천 아티스트 1</div>
-            <div class="artist-recommendation small-box">추천 아티스트 2</div>
-            <div class="artist-recommendation small-box">추천 아티스트 3</div>
-            <div class="artist-recommendation small-box">추천 아티스트 4</div>
-
-            <!-- 추천 플레이리스트 (2x1, 8:3 비율) -->
-            <div class="playlist-recommendation medium-box">추천 플레이리스트 1</div>
-            <div class="playlist-recommendation medium-box">추천 플레이리스트 2</div>
+            <!-- 박스들이 JavaScript를 통해 동적으로 추가됩니다 -->
         </section>
 
-        <!-- PiP 미니 재생바 -->
         <aside id="pip">
             <img src="album-cover.jpg" alt="앨범 자켓" class="album-cover">
             <div class="music-info">
@@ -52,6 +34,7 @@
             <div class="genre" data-genre="rock">Rock</div>
             <div class="genre" data-genre="hip-hop">Hip-Hop</div>
         </section>
+        
     </main>
 
     <script src="scripts.js"></script>
