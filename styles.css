@@ -1,0 +1,182 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    margin: 0;
+    position: relative;
+}
+
+.background-lines {
+    display: flex;
+    width: 100%; /* 화면 전체 가로 길이 */
+    position: absolute;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    z-index: 0;
+    top: -10%;
+}
+
+.background-lines .line {
+    height: 5px; /* 선의 두께 */
+    width: 100%; /* 선의 가로 길이 */
+    background-color: #C19E3F; /* 금색 */
+    margin-bottom: 20px; /* 두 줄 사이의 간격 */
+}
+
+.background-lines .line:last-child {
+    margin-bottom: 0;
+}
+
+
+.main-container {
+    position: relative;
+    width: 100%; /* 화면 전체 너비 */
+    height: 100%; /* 화면 전체 높이 */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 가로 중앙 정렬 */
+}
+.record-container {
+    position: absolute; /* 화면 중앙에 고정 */
+    top: 40%; /* 화면 높이의 50% */
+    left: 50%; /* 화면 너비의 50% */
+    transform: translate(-50%, -50%); /* 정확히 중앙 배치 */
+    z-index: 1; /* 다른 요소 위에 배치 */
+}
+
+
+.record {
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background-image: url('images/record.jpg'); /* 여기에 레코드 이미지 경로를 입력하세요 */
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    animation: spin 5s linear infinite;
+    overflow: hidden;
+}
+
+.album-cover {
+    position: absolute;
+    inset: 25%;
+    width: 50%;
+    height: 50%;
+    border-radius: 50%;
+}
+
+.side-buttons {
+    display: flex;
+    flex-direction: column; /* 버튼들을 세로로 정렬 */
+    gap: 10px; /* 버튼 간 간격 */
+    position: fixed; /* 화면 기준으로 위치 고정 */
+    top: 40%;
+    right: 50px;
+    transform: translateY(-50%);
+}
+
+.side-buttons button {
+    border: none; /* 테두리 제거 */
+    background-color: #000; /* 까만 배경 */
+    color: #fff; /* 흰색 텍스트 */
+    font-size: 16px; /* 텍스트 크기 */
+    font-weight: bold; /* 텍스트 강조 */
+    padding: 10px 20px; /* 버튼 내부 여백 */
+    cursor: pointer; /* 커서 모양 */
+    transition: background-color 0.3s, transform 0.3s; /* 호버 시 배경색 변화 및 크기 조정 */
+    width: 120px; /* 버튼 너비 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    border-radius: 5px; /* 약간의 둥근 모서리 */
+}
+
+.side-buttons button:hover {
+    background-color: #444; /* 호버 시 밝은 색으로 변경 */
+    transform: scale(1.05); /* 약간 확대 */
+}
+
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.song-info {
+    position: absolute; /* 아래로 배치 */
+    bottom: 13%; /* 화면 하단 기준 */
+    width: 50%; /* 전체 너비 */
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 가로 중앙 정렬 */
+    gap: 0px; /* 줄 간 간격 */
+    z-index: 0;
+}
+
+.title-line {
+    display: flex;
+    justify-content: space-between; /* 제목과 좋아요 개수를 양끝에 배치 */
+    align-items: center;
+    width: 50%; /* 적절한 너비 설정 */
+    max-width: 300px;
+    font-size: 18px;
+}
+
+.title-line #song-title {
+    font-weight: bold;
+    flex: 2;
+    text-align: left;
+    overflow: hidden; /* 제목이 너무 길 경우 처리 */
+    white-space: nowrap; /* 줄바꿈 방지 */
+    text-overflow: ellipsis; /* 제목이 길 경우 말줄임표 추가 */
+    font-size: 25px;
+}
+
+.title-line #like-count {
+    flex: 1; 
+    text-align: right; /* 오른쪽 정렬 */
+    white-space: nowrap; /* 줄바꿈 방지 */
+    margin-left: 10px;
+}
+
+.artist-line {
+    font-size: 16px;
+    color: #666;
+    text-align: left;
+    width: 50%;
+    margin: 0 auto;
+    margin-top: -3%;
+}
+
+.progress-bar {
+    width: 50%; /* 재생바 너비 */
+    max-width: 600px;
+}
+
+#song-progress {
+    width: 100%;
+}
+
+.control-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* 버튼 간 간격 */
+    width: 100%; /* 버튼 영역의 너비 */
+    max-width: 300px; /* 최대 너비 제한 */
+}
+
+.control-buttons button {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 14px; /* 버튼 글씨 크기 줄임 */
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.control-buttons button:hover {
+    background-color: #e0e0e0;
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>음악 재생 페이지</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="background-lines">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+    <div class="main-container">
+        <div class="record-container">
+            <div class="record">
+                <img id="album-cover" src="images/cover.jpg" alt="Album Cover" class="album-cover">
+            </div>
+        </div>
+        <div class="side-buttons">
+            <button>가사</button>
+            <button>추천</button>
+            <button>다음 트랙</button>
+            <button>아티스트</button>
+        </div>
+        <div class="song-info">
+            <div class="title-line">
+                <p id="song-title">노래 제목</p>
+                <span id="like-count">♥ 3</span>
+            </div>
+            <!-- 아티스트 이름 -->
+            <div class="artist-line">
+                <p id="artist-name">아티스트 이름</p>
+            </div>
+            <!-- 재생바 -->
+            <div class="progress-bar">
+                <input type="range" id="song-progress" min="0" max="100" value="30">
+            </div>
+            <!-- 컨트롤 버튼 -->
+            <div class="control-buttons">
+                <button id="play-button">⏯️</button>
+                <button id="prev-button">⏮️</button>
+                <button id="next-button">⏭️</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
