@@ -30,7 +30,6 @@ body {
     margin-bottom: 0;
 }
 
-
 .main-container {
     position: relative;
     width: 100%; /* 화면 전체 너비 */
@@ -38,7 +37,9 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center; /* 가로 중앙 정렬 */
+    transition: transform 0.5s ease; /* 메인 컨테이너 이동 효과 */
 }
+
 .record-container {
     position: absolute; /* 화면 중앙에 고정 */
     top: 40%; /* 화면 높이의 50% */
@@ -46,7 +47,6 @@ body {
     transform: translate(-50%, -50%); /* 정확히 중앙 배치 */
     z-index: 1; /* 다른 요소 위에 배치 */
 }
-
 
 .record {
     width: 500px;
@@ -76,6 +76,7 @@ body {
     top: 40%;
     right: 50px;
     transform: translateY(-50%);
+    z-index: 10;
 }
 
 .side-buttons button {
@@ -97,10 +98,35 @@ body {
     transform: scale(1.05); /* 약간 확대 */
 }
 
+.side-panel {
+    position: fixed;
+    top: 50%; /* 화면 중앙 */
+    right: 300px; /* 오른쪽에서 50px */
+    text-align: center;
+    transform: translateY(-50%); /* 수직 중앙 정렬 */
+    opacity: 0; /* 초기 투명 상태 */
+    width: 500px; /* 패널 너비 */
+    height: 80%; /* 화면 높이의 80% */
+    background-color: inherit; /* 패널 배경 */
+    color: #000;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    z-index: 1;
+    padding: 20px; /* 내부 여백 */
+    box-sizing: border-box;
+    overflow-y: auto; /* 내용 스크롤 */
+    transition: opacity 0.5s ease; /* 투명도 애니메이션 */
+    box-shadow: none; /* 그림자 없애기 */
+    font-weight: bold;
+}
+
 
 @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .song-info {
@@ -113,70 +139,4 @@ body {
     align-items: center; /* 가로 중앙 정렬 */
     gap: 0px; /* 줄 간 간격 */
     z-index: 0;
-}
-
-.title-line {
-    display: flex;
-    justify-content: space-between; /* 제목과 좋아요 개수를 양끝에 배치 */
-    align-items: center;
-    width: 50%; /* 적절한 너비 설정 */
-    max-width: 300px;
-    font-size: 18px;
-}
-
-.title-line #song-title {
-    font-weight: bold;
-    flex: 2;
-    text-align: left;
-    overflow: hidden; /* 제목이 너무 길 경우 처리 */
-    white-space: nowrap; /* 줄바꿈 방지 */
-    text-overflow: ellipsis; /* 제목이 길 경우 말줄임표 추가 */
-    font-size: 25px;
-}
-
-.title-line #like-count {
-    flex: 1; 
-    text-align: right; /* 오른쪽 정렬 */
-    white-space: nowrap; /* 줄바꿈 방지 */
-    margin-left: 10px;
-}
-
-.artist-line {
-    font-size: 16px;
-    color: #666;
-    text-align: left;
-    width: 50%;
-    margin: 0 auto;
-    margin-top: -3%;
-}
-
-.progress-bar {
-    width: 50%; /* 재생바 너비 */
-    max-width: 600px;
-}
-
-#song-progress {
-    width: 100%;
-}
-
-.control-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 10px; /* 버튼 간 간격 */
-    width: 100%; /* 버튼 영역의 너비 */
-    max-width: 300px; /* 최대 너비 제한 */
-}
-
-.control-buttons button {
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px 15px;
-    font-size: 14px; /* 버튼 글씨 크기 줄임 */
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.control-buttons button:hover {
-    background-color: #e0e0e0;
 }
