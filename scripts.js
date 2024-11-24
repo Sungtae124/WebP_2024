@@ -58,7 +58,7 @@ function updatePiP(music) {
     const pipTitle = document.querySelector("#pip .music-info p");
 
     // PiP 요소 업데이트
-    pipImage.src = music.albumImage;
+    pipImage.src = music.albumImage || "/default/default-album.png";
     pipImage.alt = `${music.title} - ${music.artist}`;
     pipTitle.textContent = `${music.title} - ${music.artist}`;
 }

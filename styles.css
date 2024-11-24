@@ -15,6 +15,7 @@ body {
 }
 
 header {
+    position: relative; /* 검색창 아래 추천 검색어 고정 */
     background-color: var(--dark-bg);
     color: var(--highlight);
     padding: 20px;
@@ -35,6 +36,45 @@ h1 {
     border: none;
     color: var(--highlight);
     font-size: 18px;
+}
+
+/* 검색창 placeholder 스타일 */
+#search-bar::placeholder {
+    color: var(--highlight); /* 가독성을 위해 강조색 사용 */
+    opacity: 0.8; /* 투명도 조절 (1: 불투명, 0: 투명) */
+    font-style: italic; /* 기울임꼴로 표시 (선택 사항) */
+}
+
+/* 추천 검색어 박스 */
+#suggestions {
+    display: none; /* 기본적으로 숨김 */
+    position: absolute;
+    top: calc(100% + 5px); /* 검색창 바로 아래 위치 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 500px; /* 검색창 최대 폭과 동일 */
+    background-color: var(--light-bg);
+    border: 1px solid var(--accent);
+    border-radius: 5px;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* 추천 검색어 박스 내부 */
+.suggestion-box {
+    padding: 10px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+}
+
+/* 마지막 추천 검색어 박스의 테두리 제거 */
+.suggestion-box:last-child {
+    border-bottom: none;
 }
 
 /* 추천 목록 그리드 설정 */

@@ -7,9 +7,16 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- 검색창 -->
     <header>
         <h1>Playmingo</h1>
-        <input type="text" id="search-bar" placeholder="음악 검색...">
+        <input
+            type="text"
+            id="search-bar"
+            placeholder="음악 검색..."
+            autocomplete="off"
+        />
+        <!-- 추천 검색어 표시 영역 -->
         <div id="suggestions"></div>
     </header>
 
@@ -34,9 +41,10 @@
             <div class="genre" data-genre="rock">Rock</div>
             <div class="genre" data-genre="hip-hop">Hip-Hop</div>
         </section>
-        
     </main>
 
-    <script src="scripts.js"></script>
+    <script type="module" src="search.js"></script>
+    <script type="module" src="scripts.js"></script>
+    <script type="module" src="api.js"></script>
 </body>
 </html>
