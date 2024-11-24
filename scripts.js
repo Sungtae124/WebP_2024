@@ -9,13 +9,13 @@ class Music {
 
 // Music 객체 배열 생성
 const musicList = [
-    new Music("Albums/jacket/YdBB1.jpg", "YdBB", "Song 1"),
-    new Music("Albums/jacket/YdBB-IGNITE.jpg", "YdBB", "Song 2"),
-    new Music("Albums/jacket/Hanroro-HOME.jpg", "Hanroro", "Song 3"),
-    new Music("Albums/jacket/Hanroro-compass.jpg", "Hanroro", "Song 4"),
-    new Music("Albums/jacket/Hanroro-TakeOff.jpg", "Hanroro", "Song 5"),
-    new Music("Albums/jacket/Hanroro-EvenIfYouLeave.jpg", "Hanroro", "Song 6"),
-    new Music("Albums/jacket/Touched-Addiction.jpg", "Touched", "Song 7")
+    new Music("Albums/jacket/YdBB1.jpg", "YdBB", "LETTER"),
+    new Music("Albums/jacket/YdBB-IGNITE.jpg", "YdBB", "불"),
+    new Music("Albums/jacket/Hanroro-HOME.jpg", "Hanroro", "ㅈ ㅣ ㅂ"),
+    new Music("Albums/jacket/Hanroro-compass.jpg", "Hanroro", "나침반"),
+    new Music("Albums/jacket/Hanroro-TakeOff.jpg", "Hanroro", "이상비행"),
+    new Music("Albums/jacket/Hanroro-EvenIfYouLeave.jpg", "Hanroro", "자처"),
+    new Music("Albums/jacket/Touched-Addiction.jpg", "Touched", "Addiction")
 ];
 
 // 추천 목록 박스 렌더링

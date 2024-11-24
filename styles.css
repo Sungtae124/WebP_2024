@@ -62,7 +62,7 @@ h1 {
 
 /* 앨범 이미지 스타일 */
 .album-image {
-    width: 60%; /* 박스 너비의 40% */
+    width: 50%; /* 박스 너비의 60% */
     max-height: 90%;
     object-fit: contain;
     border-radius: 5%;
@@ -78,13 +78,14 @@ h1 {
     justify-content: center;
     align-items: flex-start;
     text-align: left;
+    object-fit: contain;
 }
 
 .music-info h4 {
     font-size: 1.5rem; /* 제목을 더 크게 표시 */
     font-weight: bold;
     margin: 0 0 1rem; /* 아래 간격 */
-    text-align: right;
+    /* text-align: right; */
     color: #333;
 }
 
@@ -92,7 +93,7 @@ h1 {
     font-size: 1.2rem; /* 일반 텍스트 크기 */
     color: #666;
     margin: 0;
-    text-align: right;
+    /* text-align: right; */
 }
 
 /* 2x2, 4:3 비율 (유사한 음악 추천) */
@@ -175,7 +176,7 @@ h1 {
     opacity: 1; /* 기본 투명도 */
 }
 
-/* PiP가 겹칠 때 투명도 변경 */
+/* PiP가 겹칠 때 투명도 변경 구현 예정*/
 #pip.dimmed {
     opacity: 0.5; /* 겹쳤을 때 투명도 */
 }
@@ -204,7 +205,7 @@ h1 {
 
 /* 재생바 스타일 */
 #pip .progress {
-    width: 100%;
+    width: clamp(100px, 1vw, 200px);
     height: 5px;
     appearance: none;
     background-color: var(--gold);
