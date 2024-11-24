@@ -14,7 +14,8 @@ const musicList = [
     new Music("Albums/jacket/Hanroro-HOME.jpg", "Hanroro", "Song 3"),
     new Music("Albums/jacket/Hanroro-compass.jpg", "Hanroro", "Song 4"),
     new Music("Albums/jacket/Hanroro-TakeOff.jpg", "Hanroro", "Song 5"),
-    new Music("Albums/jacket/Hanroro-EvenIfYouLeave.jpg", "Hanroro", "Song 6")
+    new Music("Albums/jacket/Hanroro-EvenIfYouLeave.jpg", "Hanroro", "Song 6"),
+    new Music("Albums/jacket/Touched-Addiction.jpg", "Touched", "Song 7")
 ];
 
 // 추천 목록 박스 렌더링
@@ -42,12 +43,31 @@ function renderMusicBoxes(musicList) {
             </div>
         `;
 
+        // 박스 클릭 이벤트로 PiP 업데이트
+        musicBox.addEventListener("click", () => {
+            updatePiP(music);
+        });
+
         // 그리드에 추가
         grid.appendChild(musicBox);
     });
+}
+// PiP 정보 업데이트 함수
+function updatePiP(music) {
+    const pipImage = document.querySelector("#pip .album-cover");
+    const pipTitle = document.querySelector("#pip .music-info p");
+
+    // PiP 요소 업데이트
+    pipImage.src = music.albumImage;
+    pipImage.alt = `${music.title} - ${music.artist}`;
+    pipTitle.textContent = `${music.title} - ${music.artist}`;
 }
 
 // 페이지 로드 시 실행
 document.addEventListener("DOMContentLoaded", () => {
     renderMusicBoxes(musicList);
+
+    // 초기 PiP를 임시로 첫 번째 음악으로 설정
+    updatePiP(musicList[0]);
 });
+

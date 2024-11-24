@@ -28,7 +28,7 @@ h1 {
 
 #search-bar {
     width: 100%;
-    max-width: 500px;
+    width: clamp(200px, 30vw, 500px); /* 최소 200px, 최대 500px로 가로 크기 조정 */
     padding: 10px;
     margin-top: 10px;
     background-color: var(--accent);
@@ -160,6 +160,7 @@ h1 {
 /* PiP 스타일 */
 #pip {
     position: fixed;
+    width: clamp(200px, 30vw, 500px); /* 최소 200px, 최대 500px로 가로 크기 조정 */
     bottom: 10px;
     right: 10px;
     background-color: var(--dark-bg);
@@ -167,14 +168,66 @@ h1 {
     display: flex;
     padding: 10px;
     align-items: center;
+    border-radius: 15px;
     border: 1px solid var(--gold);
+    z-index: 1000; /* 다른 요소 위에 표시 */
+    transition: opacity 0.3s ease; /* 투명도 전환 효과 */
+    opacity: 1; /* 기본 투명도 */
 }
 
-.album-cover {
+/* PiP가 겹칠 때 투명도 변경 */
+#pip.dimmed {
+    opacity: 0.5; /* 겹쳤을 때 투명도 */
+}
+
+#pip .album-cover {
     width: 50%;
     height: 50%;
     border-radius: 5%;
     margin-right: 5%;
+    object-fit: contain;
+}
+
+/* 음악 정보 텍스트 */
+#pip .music-info {
+    flex: 1; /* 나머지 공간을 차지 */
+    display: flex;
+    flex-direction: column; /* 텍스트와 진행바를 세로로 정렬 */
+}
+
+/* 음악 정보 텍스트 */
+#pip .music-info p {
+    font-size: clamp(0.8rem, 1vw, 2.0rem); /* 글씨 크기를 화면 크기에 맞게 조정 */
+    line-height: 1.4; /* 텍스트 간격 조정 */
+    margin: 5%;
+}
+
+/* 재생바 스타일 */
+#pip .progress {
+    width: 100%;
+    height: 5px;
+    appearance: none;
+    background-color: var(--gold);
+    margin-top: 5px;
+}
+
+/* 확대 버튼 스타일 */
+#pip #expand-button {
+    position: absolute; /* PiP 내부에서 절대 위치 지정 */
+    bottom: 10px; /* PiP의 하단에서 10px 떨어짐 */
+    right: 10px; /* PiP의 우측에서 10px 떨어짐 */
+    background-color: var(--highlight);
+    color: var(--dark-bg);
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 0.8rem; /* 버튼 글씨 크기 */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#pip #expand-button:hover {
+    background-color: var(--gold);
 }
 
 /* 다른 장르 추천 */
