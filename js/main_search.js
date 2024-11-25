@@ -1,4 +1,4 @@
-import { getAccessToken, fetchSpotifySuggestions } from "./api.js";
+import { getAccessToken, fetchSpotifySuggestions } from "./main_api.js";
 
 // 검색창 요소와 추천 검색어 박스 선택
 const searchBar = document.getElementById("search-bar");

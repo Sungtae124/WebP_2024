@@ -1,5 +1,5 @@
-import { getAccessToken, fetchSpotifySearchResults } from "./api.js";
-import { updatePiP, initializePiP } from "./pip.js";
+import { getAccessToken, fetchSpotifySearchResults } from "./main_api.js";
+import { updatePiP, initializePiP } from "./main_pip.js";
 
 // Music 클래스 정의
 class Music {
