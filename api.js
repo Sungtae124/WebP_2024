@@ -1,5 +1,3 @@
-import { getAccessToken } from "./auth.js"; // Access Token 가져오는 함수
-
 // keys.txt 파일에서 데이터를 읽어오는 함수
 async function loadKeys() {
     const response = await fetch("./keys.txt"); // keys.txt 파일 요청
@@ -14,68 +12,66 @@ async function loadKeys() {
     return keys;
 }
 
-// Spotify 인증 URL 생성
-export async function getSpotifyAuthUrl() {
-    const keys = await loadKeys(); // keys.txt 파일 로드
-    const authUrl = `https://accounts.spotify.com/authorize?client_id=${
-        keys.SPOTIFY_CLIENT_ID
-    }&response_type=token&redirect_uri=${encodeURIComponent(
-        keys.SPOTIFY_REDIRECT_URI
-    )}&scope=${encodeURIComponent(keys.SPOTIFY_SCOPE)}&state=${keys.SPOTIFY_STATE}`;
-    return authUrl;
-}
+// Access Token 발급 함수
+export async function getAccessToken() {
+    const keys = await loadKeys(); // 비동기로 keys 가져오기
+    const clientId = keys["SPOTIFY_CLIENT_ID"];
+    const clientSecret = keys["SPOTIFY_CLIENT_SECRET"];
+    const tokenUrl = "https://accounts.spotify.com/api/token";
 
-// URL에서 Access Token 추출
-export function extractAccessToken() {
-    const hash = window.location.hash.substring(1); // URL의 해시 부분에서 추출
-    const params = new URLSearchParams(hash);
-    const accessToken = params.get("access_token");
-    const returnedState = params.get("state");
+    try {
+        const response = await fetch(tokenUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                Authorization: `Basic ${btoa(clientId + ":" + clientSecret)}`,
+            },
+            body: "grant_type=client_credentials",
+        });
 
-    // State 검증
-    if (returnedState && returnedState !== "lyslys") {
-        console.error("State 값이 일치하지 않습니다.");
+        const data = await response.json();
+        if (response.ok) {
+            console.log("Access Token 발급 성공:", data.access_token);
+            return data.access_token;
+        } else {
+            console.error("Access Token 발급 실패:", data);
+            return null;
+        }
+    } catch (error) {
+        console.error("Access Token 요청 중 오류 발생:", error);
         return null;
     }
-
-    return accessToken;
 }
 
 // Spotify API 호출 함수
-export async function fetchSpotifySuggestions(query, type = "track", limit = 5) {
-    const token = sessionStorage.getItem("spotifyAccessToken");
-    if (!token) {
-        console.error("Access Token이 없습니다. 먼저 로그인하세요.");
-        return [];
-    }
-
-    const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=${type}&limit=${limit}`;
+export async function fetchSpotifySuggestions(query, token) {
+    const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=5`;
 
     try {
         const response = await fetch(url, {
             headers: {
                 Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
             },
         });
 
         if (!response.ok) {
-            throw new Error(`Spotify API 호출 실패: ${response.status}`);
+            console.error("Spotify API 요청 실패:", response.statusText);
+            return [];
         }
 
         const data = await response.json();
-
-        // 데이터 변환
         return data.tracks.items.map((track) => ({
             name: track.name,
-            artist: track.artists[0]?.name || "Unknown",
-            albumImage: track.album.images[1]?.url || "", // 중간 크기 이미지
+            artist: track.artists[0]?.name,
+            albumImage: track.album.images[0]?.url,
         }));
     } catch (error) {
         console.error("Spotify API 호출 중 오류 발생:", error);
         return [];
     }
 }
+
+
 
 
 /*
