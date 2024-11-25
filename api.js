@@ -1,6 +1,9 @@
+let cachedAccessToken = null;
+let tokenExpiryTime = null;
+
 // keys.txt 파일에서 데이터를 읽어오는 함수
 async function loadKeys() {
-    const response = await fetch("./keys.txt"); // keys.txt 파일 요청
+    const response = await fetch("./keys.txt");
     const text = await response.text();
     const keys = {};
     text.split("\n").forEach((line) => {
@@ -14,7 +17,11 @@ async function loadKeys() {
 
 // Access Token 발급 함수
 export async function getAccessToken() {
-    const keys = await loadKeys(); // 비동기로 keys 가져오기
+    if (cachedAccessToken && tokenExpiryTime > Date.now()) {
+        return cachedAccessToken; // 유효한 캐시된 토큰 반환
+    }
+
+    const keys = await loadKeys();
     const clientId = keys["SPOTIFY_CLIENT_ID"];
     const clientSecret = keys["SPOTIFY_CLIENT_SECRET"];
     const tokenUrl = "https://accounts.spotify.com/api/token";
@@ -31,8 +38,9 @@ export async function getAccessToken() {
 
         const data = await response.json();
         if (response.ok) {
-            console.log("Access Token 발급 성공:", data.access_token);
-            return data.access_token;
+            cachedAccessToken = data.access_token;
+            tokenExpiryTime = Date.now() + data.expires_in * 1000;
+            return cachedAccessToken;
         } else {
             console.error("Access Token 발급 실패:", data);
             return null;
@@ -43,9 +51,69 @@ export async function getAccessToken() {
     }
 }
 
-// Spotify API 호출 함수
+// Spotify API를 사용해 추천 정보 가져오기
+export async function fetchSpotifyRecommendations(genre, token) {
+    const url = `https://api.spotify.com/v1/recommendations?seed_genres=${encodeURIComponent(
+        genre
+    )}&limit=10`;
+
+    try {
+        const response = await fetch(url, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            console.error("Spotify API 요청 실패:", response.statusText);
+            return { tracks: [] }; // 기본값 반환
+        }
+
+        const data = await response.json();
+        console.log("Spotify Recommendations Data:", data); // 디버깅용 출력
+        return data;
+    } catch (error) {
+        console.error("Spotify API 호출 중 오류 발생:", error);
+        return { tracks: [] }; // 기본값 반환
+    }
+}
+// 검색어 기반으로 Spotify 추천 데이터 가져오기
+export async function fetchSpotifySearchResults(query, token) {
+    const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(
+        query
+    )}&type=track,album,artist&limit=5`;
+
+    try {
+        const response = await fetch(url, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            console.error("Spotify Search API 요청 실패:", response.statusText);
+            return { tracks: [], albums: [], artists: [] };
+        }
+
+        const data = await response.json();
+
+        // 검색 결과 정리
+        return {
+            tracks: data.tracks?.items || [],
+            albums: data.albums?.items || [],
+            artists: data.artists?.items || [],
+        };
+    } catch (error) {
+        console.error("Spotify Search API 호출 중 오류 발생:", error);
+        return { tracks: [], albums: [], artists: [] };
+    }
+}
+
+// 추천 검색어 가져오기
 export async function fetchSpotifySuggestions(query, token) {
-    const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=5`;
+    const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(
+        query
+    )}&type=track&limit=5`;
 
     try {
         const response = await fetch(url, {
@@ -63,44 +131,10 @@ export async function fetchSpotifySuggestions(query, token) {
         return data.tracks.items.map((track) => ({
             name: track.name,
             artist: track.artists[0]?.name,
-            albumImage: track.album.images[0]?.url,
+            albumImage: track.album.images[0]?.url || "/default/default-album.png",
         }));
     } catch (error) {
         console.error("Spotify API 호출 중 오류 발생:", error);
         return [];
     }
 }
-
-
-
-
-/*
-// YouTube Music API 호출
-export async function fetchYoutubeSuggestions(query) {
-    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=5&key=YOUR_YOUTUBE_API_KEY`; // YouTube API 키 필요
-    const response = await fetch(url);
-    const data = await response.json();
-    return data.items.map(item => ({
-        name: item.snippet.title,
-        artist: item.snippet.channelTitle,
-        source: "YouTube",
-    }));
-}
-
-// 카카오뮤직 API 호출 (예시)
-export async function fetchKakaoSuggestions(query) {
-    // 카카오뮤직 API 엔드포인트가 없다면 웹 스크래핑 또는 다른 방법 활용 필요
-    const url = `https://api.kakao.com/music/search?q=${encodeURIComponent(query)}&limit=5`; // 가상의 URL
-    const response = await fetch(url, {
-        headers: {
-            Authorization: `Bearer YOUR_KAKAO_TOKEN`, // 카카오뮤직 API 토큰 필요
-        },
-    });
-    const data = await response.json();
-    return data.items.map(item => ({
-        name: item.title,
-        artist: item.artist,
-        source: "KakaoMusic",
-    }));
-}
-*/

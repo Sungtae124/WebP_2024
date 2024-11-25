@@ -68,6 +68,14 @@ searchBar.addEventListener(
     }, 300)
 );
 
+// 검색창 이벤트 리스너
+document.getElementById("search-bar").addEventListener("input", debounce(async (event) => {
+    const query = event.target.value.trim();
+    if (query.length > 2) { // 최소 3자 이상 입력 시 검색 실행
+        await fetchAndRenderSearchResults(query);
+    }
+}, 300));
+
 // 검색창 포커스 아웃(blur) 이벤트
 searchBar.addEventListener("blur", () => {
     setTimeout(() => {
