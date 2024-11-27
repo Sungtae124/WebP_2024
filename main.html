@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Playmingo - Music Recommendation</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/main_styles.css">
 </head>
 <body>
     <!-- 검색창 -->
     <header>
         <h1>Playmingo</h1>
         <input type="text" id="search-bar" placeholder="음악 검색..." autocomplete="off" />
-        <button id="spotify-login-button">Spotify 로그인</button>
         <!-- 추천 검색어 표시 영역 -->
         <div id="suggestions"></div>
     </header>
@@ -39,8 +38,8 @@
         </section>
     </main>
 
-    <script type="module" src="search.js"></script>
-    <script type="module" src="scripts.js"></script>
-    <script type="module" src="api.js"></script>
+    <script type="module" src="js/main_search.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/main_api.js"></script>
 </body>
 </html>
