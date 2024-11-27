@@ -1,4 +1,4 @@
-import { getSpotifyAuthUrl, extractAccessToken } from "./js/main_api.js";
+import { getSpotifyAuthUrl, extractAccessToken } from "./api.js";
 
 // Spotify 로그인 버튼 핸들링
 document.getElementById("spotify-login-button").addEventListener("click", async () => {
