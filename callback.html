@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Callback</title>
+    <script type="module">
+        // JavaScript 모듈을 사용하여 처리 스크립트 추가
+        import { handleRedirectCallback } from './auth.js';
+
+        // 콜백 처리 함수 실행
+        document.addEventListener('DOMContentLoaded', () => {
+            handleRedirectCallback();
+        });
+    </script>
+</head>
+<body>
+    <h1>Processing Authentication...</h1>
+    <p> <a href="index.html">index로</a></p>
+</body>
+</html>

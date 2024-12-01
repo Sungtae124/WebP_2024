@@ -1,10 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>index</title>
 </head>
 <body>
     <a href="detail.html">ㄱ</a>
+    <button id="login-button">Login with Spotify</button> <!-- 로그인 버튼 -->
+
+    <script type="module">
+        import { login } from './auth.js';
+
+        // 버튼 클릭 시 login 함수 호출
+        document.getElementById("login-button").addEventListener("click", login);
+    </script>
 </body>
 </html>
