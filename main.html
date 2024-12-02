@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playmingo - Music Recommendation</title>
+    <link rel="stylesheet" href="css/main_styles.css">
+</head>
+<body>
+    <!-- 검색창 -->
+    <header>
+        <h1>Playmingo</h1>
+        <input type="text" id="search-bar" placeholder="음악 검색..." autocomplete="off" />
+        <!-- 추천 검색어 표시 영역 -->
+        <div id="suggestions"></div>
+    </header>
+
+    <main>
+        <section class="recommendation-grid">
+            <!-- 박스들이 JavaScript를 통해 동적으로 추가됩니다 -->
+        </section>
+
+        <aside id="pip">
+            <img src="/Albums/jacket/YdBB1.jpg" alt="앨범 자켓" class="album-cover">
+            <div class="music-info">
+                <p> Title - singer</p>
+                <progress value="30" max="100"></progress>
+            </div>
+            <button id="expand-button">확대</button>
+        </aside>
+
+        <!-- 다른 장르 추천 -->
+        <section id="other-genres">
+            <div class="genre" data-genre="pop">Pop</div>
+            <div class="genre" data-genre="jazz">Jazz</div>
+            <div class="genre" data-genre="rock">Rock</div>
+            <div class="genre" data-genre="hip-hop">Hip-Hop</div>
+        </section>
+    </main>
+
+    <script type="module" src="js/main_search.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/main_api.js"></script>
+</body>
+</html>
