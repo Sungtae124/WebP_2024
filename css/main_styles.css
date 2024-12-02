@@ -106,29 +106,30 @@ h1 {
 /* 추천 목록 그리드 설정 */
 .recommendation-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2%;
-    padding: 5%;
-    max-width: 1400px;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 5%; /* 박스 사이 간격 */
+    padding: 5%; /* 전체 여백 */
+    max-width: 1400px; /* 최대 너비 설정 */
     margin: 0 auto;
-    margin-bottom: 10%;
+    margin-bottom: 5%;
 }
 
 /* 박스 스타일 */
 .recommendation-box {
     background-color: #ffffff;
     border-radius: 5%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    display: flex; /* 이미지와 텍스트를 가로로 배치 */
+    display: flex;
+    flex-direction: row;
     align-items: center;
-    padding: 5%; /* 박스 내부 여백 */
-    gap: 5%; /* 이미지와 텍스트 사이 여백 */
+    text-align: left;
+    padding: 1rem;
+    gap: 1rem;
 }
 
 /* 앨범 이미지 스타일 */
 .album-image {
-    width: 50%; /* 박스 너비의 60% */
+    width: 50%; /* 왼쪽 절반 */
     max-height: 90%;
     object-fit: contain;
     border-radius: 5%;
@@ -143,15 +144,14 @@ h1 {
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    text-align: left;
-    object-fit: contain;
+    text-align: right;
+    /* object-fit: contain; */
 }
 
 .music-info h4 {
     font-size: 1.5rem; /* 제목을 더 크게 표시 */
     font-weight: bold;
     margin: 0 0 1rem; /* 아래 간격 */
-    /* text-align: right; */
     color: #333;
 }
 
@@ -159,68 +159,97 @@ h1 {
     font-size: 1.2rem; /* 일반 텍스트 크기 */
     color: #666;
     margin: 0;
-    /* text-align: right; */
 }
 
-/* 2x2, 4:3 비율 (유사한 음악 추천) */
+
+/* Large Box (앨범 추천) */
 .large-box {
-    grid-column: span 2;
-    grid-row: span 2;
-    background-color: var(--box-bg);
-    display: flex;
+    grid-column: span 2; /* 그리드에서 2열 차지 */
+    grid-row: span 2; /* 그리드에서 2행 차지 */
+    aspect-ratio: 8 / 7; /* 가로세로 비율 유지 */
+    display: flex; /* Flex로 변경 */
+    flex-direction: row; /* 이미지와 텍스트를 가로로 배치 */
     align-items: center;
     justify-content: center;
-    /* font-size: 40px; */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    aspect-ratio: 4 / 3;
+    box-shadow: 0rem 2rem 4rem rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease; /* 호버 시 부드러운 전환 */
 }
 
-/* 2x1, 8:3 비율 (추천 앨범 및 추천 플레이리스트) */
-.medium-box {
-    grid-column: span 2;
-    grid-row: span 1;
-    background-color: var(--highlight);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* font-size: 20px; */
-    color: var(--dark-bg);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    aspect-ratio: 8 / 3;
-    height: auto;
-}
-
-/* 1x1, 4:3 비율 (추천 아티스트) */
-.small-box {
-    grid-column: span 1;
-    grid-row: span 1;
-    background-color: var(--gold);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* font-size: 12px; */
-    color: var(--dark-bg);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    aspect-ratio: 4 / 3;
+.large-box img {
+    width: 50%;
+    max-height: 90%;
+    object-fit: contain; /* 비율 유지 */
 }
 
 .large-box .music-info h4{
-    font-size: clamp(1.0rem, 3vw, 3.0rem);
+    font-size: clamp(1.0rem, 3vw, 2.0rem);
 }
 .large-box .music-info p {
     font-size: clamp(1.0rem, 3vw, 2.0rem);
 }
+/* 호버 시 그림자 강조 */
+.large-box:hover {
+    box-shadow: 0rem 2rem 4rem rgba(0, 0, 0, 0.3); /* 우측과 하단 그림자 강조 */
+}
+
+/* Medium Box (곡 추천) */
+.medium-box {
+    grid-column: span 2; /* 2열 차지 */
+    grid-row: span 1;
+    aspect-ratio: 8 / 3;
+    align-items: center;
+    justify-content: center;
+    display: flex; /* Flex로 변경 */
+    flex-direction: row; /* 이미지와 텍스트를 가로로 배치 */
+    box-shadow: 0rem 2rem 4rem rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease; /* 호버 시 부드러운 전환 */
+}
+
+.medium-box img {
+    width: 50%;
+    max-height: 90%;
+    object-fit: contain;
+}
+
 .medium-box .music-info h4{
     font-size: clamp(1.0rem, 3vw, 2.0rem);
 }
 .medium-box .music-info p{
     font-size: clamp(1.0rem, 3vw, 1.5rem);
 }
+/* 호버 시 그림자 강조 */
+.medium-box:hover {
+    box-shadow: 0rem 2rem 4rem rgba(0, 0, 0, 0.3); /* 우측과 하단 그림자 강조 */
+}
+
+/* Small Box (아티스트 추천) */
+.small-box {
+    grid-column: span 1; /* 1열 차지 */
+    grid-row: span 1;
+    aspect-ratio: 4 / 3;
+    align-items: center;
+    justify-content: center;
+    display: flex; /* Flex로 변경 */
+    flex-direction: row; /* 이미지와 텍스트를 가로로 배치 */
+    box-shadow: 0rem 2rem 4rem rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease; /* 호버 시 부드러운 전환 */
+}
+
+.small-box img {
+    width: 50%;
+    max-height: 90%;
+    object-fit: contain;
+}
+
 .small-box .music-info h4{
     font-size: clamp(0.75rem, 2vw, 1.5rem);
 }
 .small-box .music-info p{
     font-size: clamp(0.5rem, 2vw, 1.2rem);
+}
+/* 호버 시 그림자 강조 */
+.small-box:hover {
+    box-shadow: 0rem 2rem 4rem rgba(0, 0, 0, 0.3); /* 우측과 하단 그림자 강조 */
 }
 
 
