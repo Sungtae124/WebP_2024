@@ -40,13 +40,3 @@ export function initializePiP(defaultMusic) {
         pip.style.display = "none"; // 초기 상태에서는 숨기기
     }
 }
-
-/*
-// PiP 초기화 함수 (필요할 경우 추가)
-export function initializePiP(defaultMusic) {
-    if (!defaultMusic) {
-        console.warn("초기화할 기본 음악 정보가 없습니다.");
-        return;
-    }
-    updatePiP(defaultMusic);
-}*/

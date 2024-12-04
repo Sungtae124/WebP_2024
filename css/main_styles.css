@@ -255,6 +255,7 @@ h1 {
 
 /* PiP 스타일 */
 #pip {
+    display: none; /* 초기에는 숨김 */
     position: fixed;
     width: clamp(200px, 30vw, 500px); /* 최소 200px, 최대 500px로 가로 크기 조정 */
     bottom: 10px;
