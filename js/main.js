@@ -1,5 +1,6 @@
 import { getAccessToken, fetchSpotifySearchResults } from "./main_api.js";
 import { updatePiP, showPiP, hidePiP } from "./main_pip.js";
+import { renderGenreButtons } from "./genre.js";
 
 // Music 클래스 정의
 class Music {
@@ -84,6 +85,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const { tracks, albums, artists } = await fetchSpotifySearchResults(query, token);
         renderMusicBoxes(tracks, albums, artists);
     }
+    // 장르 버튼 렌더링
+    await renderGenreButtons();
 });
 
 /*

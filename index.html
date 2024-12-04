@@ -19,27 +19,24 @@
         <section class="recommendation-grid">
             <!-- 박스들이 JavaScript를 통해 동적으로 추가됩니다 -->
         </section>
+        <!-- 다른 장르 추천 -->
+        <section id="genre-buttons" class="result-grid">
+            <!-- JavaScript가 동적으로 추가 -->
+        </section>
 
         <aside id="pip">
-            <img src="/Albums/jacket/YdBB1.jpg" alt="앨범 자켓" class="album-cover">
+            <img src="/default/default-album.png" alt="앨범 자켓" class="album-cover">
             <div class="music-info">
                 <p> Title - singer</p>
                 <progress value="30" max="100"></progress>
             </div>
             <button id="expand-button">확대</button>
         </aside>
-
-        <!-- 다른 장르 추천 -->
-        <section id="other-genres">
-            <div class="genre" data-genre="pop">Pop</div>
-            <div class="genre" data-genre="jazz">Jazz</div>
-            <div class="genre" data-genre="rock">Rock</div>
-            <div class="genre" data-genre="hip-hop">Hip-Hop</div>
-        </section>
     </main>
 
     <script type="module" src="js/main_search.js"></script>
     <script type="module" src="js/main.js"></script>
     <script type="module" src="js/main_api.js"></script>
+    <script type="module" src="js/genre.js"></script>
 </body>
 </html>
