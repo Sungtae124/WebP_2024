@@ -23,3 +23,22 @@ export async function fetchTrackDetails(trackId, accessToken){
 export async function fetchArtistDetails(artistId, accessToken){
     return await fetchSpotifyData(`/artists/${artistId}`, accessToken);
 }
+
+export async function fetchAlbumDetails(albumId, accessToken) {
+    return await fetchSpotifyData(`/albums/${albumId}`, accessToken);
+}
+
+export function getAccessToken() {
+    let token = localStorage.getItem("spotify_token");
+    if (!token) {
+        const params = new URLSearchParams(window.location.hash.substring(1));
+        token = params.get("access_token");
+
+        // URL에서 추출한 토큰이 있으면 localStorage에 저장
+        if (token) {
+            localStorage.setItem("spotify_token", token);
+        }
+    }
+
+    return token;
+};

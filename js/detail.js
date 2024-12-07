@@ -1,4 +1,4 @@
-import { fetchTrackDetails, fetchArtistDetails } from './api.js';
+import { fetchTrackDetails, fetchArtistDetails, fetchAlbumDetails, getAccessToken } from './api.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     const sideButtons = document.querySelectorAll(".side-buttons button");
@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const albumCover = document.getElementById("album-cover");
     const songTitle = document.getElementById("song-title");
     const artistName = document.getElementById("artist-name");
+    const playButton = document.getElementById("play-button");
+    const progressBar = document.getElementById("song-progress");
     const body = document.body;
 
     songTitle.textContent = "Web Project"; // 노래 제목
@@ -14,37 +16,82 @@ document.addEventListener("DOMContentLoaded", () => {
     let activePanel = null; // 현재 활성 패널
     let activeButton = null; // 현재 활성 버튼
 
+    const trackId = "7pT6WSg4PCt4mr5ZFyUfsF"; // 예제 곡 ID
+
     const accessToken = getAccessToken();
-
-
-    if (accessToken) {
-        console.log("Access Token: ", accessToken);
-
-        const trackId = "3n3Ppam7vgaVa1iaRUc9Lp"; // 예제 곡 ID
-        loadTrackDetails(trackId, accessToken); //곡 정보 가져오기
-
-        // 각 버튼에 이벤트 리스너 추가
-        sideButtons.forEach((button) => {
-            button.addEventListener("click", (event) => handlePanelClick(event.currentTarget, trackId, accessToken));
-        });
-    } else {
+    if (!accessToken) {
         console.log("Token이 없음");
+        return;
     }
 
-    function getAccessToken() {
-        let token = localStorage.getItem("spotify_token");
-        if (!token) {
-            const params = new URLSearchParams(window.location.hash.substring(1));
-            token = params.get("access_token");
-    
-            // URL에서 추출한 토큰이 있으면 localStorage에 저장
-            if (token) {
-                localStorage.setItem("spotify_token", token);
+    window.onSpotifyWebPlaybackSDKReady = () => {
+        const token = localStorage.getItem("spotify_token");
+        const player = new Spotify.Player({
+            name: 'Web Playback SDK',
+            getOAuthToken: cb => { cb(token); },
+            volume: 0.3
+        });
+
+        // 플레이어 연결 성공 여부 확인
+        player.addListener('ready', ({ device_id }) => {
+            console.log('Ready with Device ID', device_id);
+
+            // 특정 트랙 재생
+            playTrack(device_id, token, trackId);
+        });
+
+        player.addListener('player_state_changed', state => {
+            if (state) {
+                const { position, duration, paused } = state;
+                progressBar.value = (position / duration) * 100;
+                playButton.textContent = paused ? '▶️' : '⏸️';
             }
-        }
-    
-        return token;
+        });
+
+        player.connect();
+
+        // 재생 버튼 클릭 이벤트
+        playButton.addEventListener("click", () => {
+            player.togglePlay();
+        });
+
+        // 슬라이더 위치 변경
+        progressBar.addEventListener("input", () => {
+            player.getCurrentState().then(state =>{
+                if (state) {
+                    const { duration } = state;
+                    const seekPosition = (progressBar.value / 100) * duration;
+                    player.seek(seekPosition);
+                }
+            });
+        });
+
     };
+
+    loadTrackDetails(trackId, accessToken); //곡 정보 가져오기
+
+    // 각 버튼에 이벤트 리스너 추가
+    sideButtons.forEach((button) => {
+        button.addEventListener("click", (event) => handlePanelClick(event.currentTarget, trackId, accessToken));
+    });
+
+    async function playTrack(deviceId, token, trackUri) {
+        try {
+            await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    uris: [`spotify:track:${trackUri}`] // 재생할 곡의 Spotify URI
+                })
+            });
+            console.log("곡 재생 시작");
+        } catch (error) {
+            console.error("곡 재생 중 오류 발생:", error);
+        }
+    }
 
     // 곡 정보 가져오기 함수
     async function loadTrackDetails(trackId, accessToken) {
@@ -61,6 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("트랙 정보 요청 중 오류 발생:", error);
         }
     }
+
 
     // 패널 클릭 이벤트 처리
     async function handlePanelClick(button, trackId, accessToken) {
@@ -155,5 +203,17 @@ document.addEventListener("DOMContentLoaded", () => {
             activeButton = null;
             mainContainer.style.transform = "translateX(0)"; // 메인 컨테이너 복귀
         }
+    }
+});
+
+window.addEventListener('load', () => {
+    const songTitle = document.getElementById('song-title');
+    const scrollContainer = document.querySelector('.scroll-container');
+    
+    // 제목 길이가 컨테이너 너비를 초과하면 애니메이션 적용
+    if (songTitle.scrollWidth > scrollContainer.clientWidth) {
+        songTitle.style.animation = 'scroll-title 10s linear infinite';
+    } else {
+        songTitle.style.animation = 'none'; // 스크롤 제거
     }
 });

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>음악 재생 페이지</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="detail.css">
 </head>
 <body>
     <div class="background-lines">
@@ -38,17 +38,19 @@
             </div>
             <!-- 재생바 -->
             <div class="progress-bar">
-                <input type="range" id="song-progress" min="0" max="100" value="30">
+                <input type="range" id="song-progress" min="0" max="100" value="0">
             </div>
             <!-- 컨트롤 버튼 -->
             <div class="control-buttons">
-                <button id="play-button">⏯️</button>
+                <button id="play-button">⏸️</button>
                 <button id="prev-button">⏮️</button>
                 <button id="next-button">⏭️</button>
+
+                <audio id="audio-player" style="display: none;"></audio>
             </div>
         </div>
     </div>
-
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
     <script type="module" src="detail.js"></script>
 </body>
 </html>
