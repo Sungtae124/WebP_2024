@@ -12,21 +12,52 @@ async function fetchAlbumsByGenre(genre, token) {
                 Authorization: `Bearer ${token}`,
             },
         });
-
+/*
         if (!response.ok) {
             console.error(`장르 ${genre}의 앨범 데이터를 가져오는 데 실패했습니다.`);
             return [];
         }
-
+*/
+        if (!response.ok) throw new Error(`Failed to fetch albums for ${genre}`);
         const data = await response.json();
         return data.albums.items.map((album) => ({
             image: album.images[0]?.url || "/default/default-album.png",
             name: album.name,
         }));
     } catch (error) {
-        console.error(`장르 ${genre}의 앨범 데이터를 가져오는 동안 오류가 발생했습니다:`, error);
+        //console.error(`장르 ${genre}의 앨범 데이터를 가져오는 동안 오류가 발생했습니다:`, error);
+        console.error(error);
         return [];
     }
+}
+
+function adjustAlbumOverlap(albumStack) {
+    const genreBox = albumStack.parentElement; // 부모 장르 박스
+    const genreBoxWidth = genreBox.offsetWidth; // 박스 전체 너비
+    const computedStyle = window.getComputedStyle(genreBox);
+    const padding = parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight); // 패딩 값 계산
+    const availableWidth = genreBoxWidth - padding; // 패딩을 제외한 가용 너비
+    const images = albumStack.querySelectorAll("img");
+
+    if (images.length === 0) return;
+
+    const totalOverlap = Math.min(availableWidth / (images.length - 1), 60); // 이미지 간의 겹침 정도
+    const scaleStep = 0.1; // 크기가 줄어드는 정도
+
+    images.forEach((img, index) => {
+        if (index === 0) {
+            // 첫 번째 이미지는 명확히 보이도록 설정
+            img.style.left = "0"; 
+            img.style.transform = "scale(1.0)"; 
+        } else {
+            // 나머지 이미지는 점진적으로 작아짐
+            img.style.left = `${index * totalOverlap}px`; 
+            img.style.transform = `scale(${1 - index * scaleStep})`; // 점진적으로 크기 감소
+        }
+        img.style.zIndex = images.length - index; // 겹치는 순서 반대로 설정
+    });
+
+    albumStack.style.width = `${availableWidth}px`; // 앨범 스택의 너비를 박스 내부 너비에 맞춤
 }
 
 // 장르 버튼 생성 및 렌더링 함수
@@ -57,16 +88,10 @@ export async function renderGenreButtons() {
         const albumStack = document.createElement("div");
         albumStack.className = "album-stack";
 
-        albums.forEach((album, index) => {
+        albums.forEach((album) => {
             const img = document.createElement("img");
             img.src = album.image;
             img.alt = album.name;
-            img.style.position = "absolute";
-            img.style.left = `${index * 20}px`;
-            img.style.zIndex = index;
-            img.style.width = "50px";
-            img.style.height = "50px";
-            img.style.borderRadius = "5px";
             albumStack.appendChild(img);
         });
 
@@ -79,13 +104,13 @@ export async function renderGenreButtons() {
         genreBox.appendChild(albumStack);
         genreBox.appendChild(genreText);
 
-        // 클릭 이벤트 추가
-        genreBox.addEventListener("click", () => {
-            console.log(`${genre} 장르 선택됨`);
-            // 선택된 장르에 대한 추가 동작 구현 가능
-        });
-
         // DOM에 추가
         genreContainer.appendChild(genreBox);
+
+        // 겹침 계산
+        adjustAlbumOverlap(albumStack);
+
+        // 창 크기 변경 시 겹침 재조정
+        window.addEventListener("resize", () => adjustAlbumOverlap(albumStack));
     }
 }
