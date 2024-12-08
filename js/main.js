@@ -79,10 +79,14 @@ function renderMusicBoxes(tracks, albums, artists) {
 // 초기 검색 및 데이터 렌더링
 document.addEventListener("DOMContentLoaded", async () => {
     hidePiP();
-    const query = "한국 인디 밴드"; // 기본 검색어
+
+    // URL에서 장르 매개변수 읽기
+    const urlParams = new URLSearchParams(window.location.search);
+    const genre = urlParams.get("genre") || "한국 인디 밴드"; // 기본 검색어
+
     const token = await getAccessToken();
     if (token) {
-        const { tracks, albums, artists } = await fetchSpotifySearchResults(query, token);
+        const { tracks, albums, artists } = await fetchSpotifySearchResults(genre, token);
         renderMusicBoxes(tracks, albums, artists);
     }
     // 장르 버튼 렌더링

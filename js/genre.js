@@ -12,12 +12,6 @@ async function fetchAlbumsByGenre(genre, token) {
                 Authorization: `Bearer ${token}`,
             },
         });
-/*
-        if (!response.ok) {
-            console.error(`장르 ${genre}의 앨범 데이터를 가져오는 데 실패했습니다.`);
-            return [];
-        }
-*/
         if (!response.ok) throw new Error(`Failed to fetch albums for ${genre}`);
         const data = await response.json();
         return data.albums.items.map((album) => ({
@@ -25,7 +19,6 @@ async function fetchAlbumsByGenre(genre, token) {
             name: album.name,
         }));
     } catch (error) {
-        //console.error(`장르 ${genre}의 앨범 데이터를 가져오는 동안 오류가 발생했습니다:`, error);
         console.error(error);
         return [];
     }
@@ -103,6 +96,11 @@ export async function renderGenreButtons() {
         // 박스 구성
         genreBox.appendChild(albumStack);
         genreBox.appendChild(genreText);
+
+        // 클릭 이벤트 추가
+        genreBox.addEventListener("click", () => {
+            window.location.href = `?genre=${genre}`; // 페이지를 해당 장르로 새로고침
+        });
 
         // DOM에 추가
         genreContainer.appendChild(genreBox);
