@@ -18,53 +18,60 @@ document.addEventListener("DOMContentLoaded", () => {
     let activeButton = null; // 현재 활성 버튼
 
     const trackId = "7pT6WSg4PCt4mr5ZFyUfsF"; // 예제 곡 ID
-    const accessToken = getAccessToken();
+    const accessToken = getAccessToken(); //액세스 토큰 가져오기
     if (!accessToken) {
         console.log("Token이 없음");
         return;
     }
 
+    //프리미엄 api 초기화
     window.onSpotifyWebPlaybackSDKReady = () => {
         const token = localStorage.getItem("spotify_token");
         const player = new Spotify.Player({
-            name: 'Web Playback SDK',
+            name: 'Web Playback SDK', //플레이어 이름
             getOAuthToken: cb => { cb(token); },
-            volume: 0.3
+            volume: 0.3 //초기 볼륨
         });
 
+        //플레이어가 준비되면
         player.addListener('ready', ({ device_id }) => {
-            playTrack(device_id, token, trackId);
+            playTrack(device_id, token, trackId); //곡 재생
         });
 
+        //플레이어 상태 변경
         player.addListener('player_state_changed', state => {
             if (state) {
                 updatePlaybackUI(state); // 재생 상태 UI 업데이트
             }
         });
 
-        player.connect();
+        player.connect(); //플레이어 연결
 
         playButton.addEventListener("click", () => {
-            player.togglePlay();
+            player.togglePlay(); //재생상태 토글
         });
 
+        //슬라이더를 움직이면
         progressBar.addEventListener("input", () => {
             player.getCurrentState().then(state => {
                 if (state) {
                     const { duration } = state;
-                    const seekPosition = (progressBar.value / 100) * duration;
-                    player.seek(seekPosition);
+                    const seekPosition = (progressBar.value / 100) * duration; //이동 위치
+                    player.seek(seekPosition); //해당 위치로 이동
                 }
             });
         });
     };
 
-    loadTrackDetails(trackId, accessToken);
+    //곡 정보 불러오기
+    loadTrackDetails(trackId, accessToken); 
 
+    //버튼들에 패널 클릭 이벤트 할당
     sideButtons.forEach(button => {
         button.addEventListener("click", (event) => handlePanelClick(event.currentTarget, trackId, accessToken));
     });
 
+    //특정 곡 재생
     async function playTrack(deviceId, token, trackUri) {
         try {
             await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
@@ -83,30 +90,32 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    //곡 정보 불러오기
     async function loadTrackDetails(trackId, accessToken) {
         try {
             const trackData = await fetchTrackDetails(trackId, accessToken);
-            updateTrackDetailsUI(trackData); // 곡 정보 UI 업데이트
+            updateTrackDetailsUI(trackData); //UI 업데이트
         } catch (error) {
             console.error("트랙 정보 요청 중 오류 발생:", error);
         }
     }
-
+    //패널 클릭 이벤트
     async function handlePanelClick(button, trackId, accessToken) {
         if (activeButton === button) {
             closeActivePanel(activePanel, activeButton, mainContainer);
             return;
         }
 
-        const previousPanel = activePanel;
-        const newPanel = createPanel(button.innerText);
+        const previousPanel = activePanel; //이전 패널 저장
+        const newPanel = createPanel(button.innerText); //새 패널 생성
 
+        //버튼 id에 따라 다른 작업 수행
         switch (button.id) {
             case "alb": //앨범 버튼
                 try {
                     const albumId = button.dataset.albumId;
                     const albumData = await fetchAlbumDetails(albumId, accessToken);
-                    // 앨범 데이터 가져오기
+                    // 앨범 데이터
                     newPanel.innerHTML = `
                         <h2>앨범 정보</h2>
                         <img src="${albumData.images[0]?.url}" alt="앨범 커버" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 10px;">
@@ -131,11 +140,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 break;
 
-            case "rec": //추천 버튼
+            case "rec": //추천 버튼, 추가 작업 필요
                 
                 break;
 
-            case "next": //다음 트랙 버튼
+            case "next": //다음 트랙 버튼, 추가 작업 필요
                 newPanel.innerHTML = `<h2>다음 트랙 패널</h2><p>다음 트랙 로딩 실패</p>`;
                 break;
 

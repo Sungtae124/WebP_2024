@@ -1,5 +1,6 @@
 const API_BASE_URL = "https://api.spotify.com/v1";
 
+//공통 api 호출 함수
 export async function fetchSpotifyData(endpoint, accessToken){
     try{
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -15,28 +16,29 @@ export async function fetchSpotifyData(endpoint, accessToken){
         throw new Error("네트워크 에러.");
     }
 }
-
+//트랙 정보 가져오기
 export async function fetchTrackDetails(trackId, accessToken){
     return await fetchSpotifyData(`/tracks/${trackId}`, accessToken);
 }
-
+//아티스트 정보 가져오기
 export async function fetchArtistDetails(artistId, accessToken){
     return await fetchSpotifyData(`/artists/${artistId}`, accessToken);
 }
-
+//앨범 가져오기
 export async function fetchAlbumDetails(albumId, accessToken) {
     return await fetchSpotifyData(`/albums/${albumId}`, accessToken);
 }
-
+//추천 트랙 가져오기(안 될 수도 있어요 확인 안 해봄)
 export async function fetchRecommendations(trackId, accessToken) {
     console.log(`API 요청 URL: ${API_BASE_URL}/recommendations?seed_tracks=${trackId}`);
     return await fetchSpotifyData(`/recommendations?seed_tracks=${trackId}&limit=10`, accessToken);
 }
-
+//내 정보 가져오기
 export async function fetchUserProfile(accessToken) {
     return await fetchSpotifyData(`/me`, accessToken);
 }
 
+//플레이리스트 생성
 export async function createPlaylist(userId, playlistName, accessToken) {
     const response = await fetch(`${API_BASE_URL}/users/${userId}/playlists`, {
         method: "POST",
@@ -55,26 +57,12 @@ export async function createPlaylist(userId, playlistName, accessToken) {
     return await response.json();
 }
 
-export async function addTracksToPlaylist(playlistId, trackUris, accessToken) {
-    const response = await fetch(`${API_BASE_URL}/playlists/${playlistId}/tracks`, {
-        method: "POST",
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            uris: trackUris,
-        }),
-    });
-
-    if (!response.ok) throw new Error("트랙 추가 실패.");
-    return await response.json();
-}
-
+//사용자 플레이리스트 가져오기
 export async function fetchUserPlaylists(accessToken) {
     return await fetchSpotifyData(`/me/playlists`, accessToken);
 }
 
+//액세스 토큰 가져오기
 export function getAccessToken() {
     let token = localStorage.getItem("spotify_token");
     if (!token) {

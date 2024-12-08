@@ -10,10 +10,11 @@ const body = document.body;
 
 // 곡 정보 UI 업데이트
 export function updateTrackDetailsUI(trackData) {
+    //곡 제목, 아티스트 이름, 앨범커버 업데이트
     songTitle.textContent = trackData.name;
     artistName.textContent = trackData.artists[0].name;
     albumCover.src = trackData.album.images[0]?.url;
-
+    //UI를 업데이트 하면서 각 버튼들에 ID도 할당해줌
     document.getElementById("art").dataset.artistId = trackData.artists[0].id;
     document.getElementById("alb").dataset.albumId = trackData.album.id;
 }
@@ -21,8 +22,8 @@ export function updateTrackDetailsUI(trackData) {
 // 재생 상태 UI 업데이트
 export function updatePlaybackUI(state) {
     const { position, duration, paused } = state;
-    progressBar.value = (position / duration) * 100;
-    playButton.textContent = paused ? '▶️' : '⏸️';
+    progressBar.value = (position / duration) * 100; //슬라이더 위치
+    playButton.textContent = paused ? '▶️' : '⏸️'; //버튼 텍스트 변경
 }
 
 // 패널 UI 생성
@@ -62,6 +63,7 @@ export function handlePanelTransition(newPanel, previousPanel, mainContainer) {
     }
 }
 
+//밀리초를 분:초 형식으로 변환(앨범 패널에서 사용)
 export function formatDuration(ms) {
     const minutes = Math.floor(ms / 60000);
     const seconds = Math.floor((ms % 60000) / 1000).toString().padStart(2, "0");
