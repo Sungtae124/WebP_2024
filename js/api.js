@@ -28,6 +28,53 @@ export async function fetchAlbumDetails(albumId, accessToken) {
     return await fetchSpotifyData(`/albums/${albumId}`, accessToken);
 }
 
+export async function fetchRecommendations(trackId, accessToken) {
+    console.log(`API 요청 URL: ${API_BASE_URL}/recommendations?seed_tracks=${trackId}`);
+    return await fetchSpotifyData(`/recommendations?seed_tracks=${trackId}&limit=10`, accessToken);
+}
+
+export async function fetchUserProfile(accessToken) {
+    return await fetchSpotifyData(`/me`, accessToken);
+}
+
+export async function createPlaylist(userId, playlistName, accessToken) {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}/playlists`, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            name: playlistName,
+            description: "생성된 플레이리스트입니다.",
+            public: false, // 비공개 플레이리스트
+        }),
+    });
+
+    if (!response.ok) throw new Error("플레이리스트 생성 실패.");
+    return await response.json();
+}
+
+export async function addTracksToPlaylist(playlistId, trackUris, accessToken) {
+    const response = await fetch(`${API_BASE_URL}/playlists/${playlistId}/tracks`, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            uris: trackUris,
+        }),
+    });
+
+    if (!response.ok) throw new Error("트랙 추가 실패.");
+    return await response.json();
+}
+
+export async function fetchUserPlaylists(accessToken) {
+    return await fetchSpotifyData(`/me/playlists`, accessToken);
+}
+
 export function getAccessToken() {
     let token = localStorage.getItem("spotify_token");
     if (!token) {
