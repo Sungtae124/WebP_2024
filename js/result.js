@@ -1,9 +1,33 @@
 import { getAccessToken, fetchSpotifySearchResults } from "./main_api.js";
 import { updatePiP, showPiP, hidePiP } from "./main_pip.js";
+import { setupLoginPopup, showLoginPopup } from "./main_login.js";
 
+// 로그인 팝업 설정
+document.addEventListener("DOMContentLoaded", () => {
+    setupLoginPopup(null, [".large-box", ".medium-box"]);
+
+    document.addEventListener("click", (e) => {
+        const target = e.target.closest(".large-box, .medium-box");
+        if (target) {
+            const isLoggedIn = false; // 임시 설정
+            if (!isLoggedIn) {
+                e.preventDefault();
+                showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
+            } else {
+                console.log("재생 시작");
+            }
+        }
+    });
+});
 
 // PiP를 업데이트하고 보이도록 설정하는 함수
 function playMusic(music) {
+    const isLoggedIn = true; // 임시 설정
+    if (!isLoggedIn) {
+        showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
+        return;
+    }
+
     updatePiP(music); // PiP 업데이트
     showPiP(); // PiP 표시
 }

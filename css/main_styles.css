@@ -389,10 +389,6 @@ h1 {
     color: var(--dark-bg);
 }
 
-.popup-background.active {
-    display: block; /* 팝업 활성화 시 표시 */
-}
-
 /* 팝업 모달 스타일 */
 body.popup-active {
     backdrop-filter: blur(5px) !important; /* 팝업 활성화 시 화면 흐리게 */
