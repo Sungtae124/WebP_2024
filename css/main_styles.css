@@ -388,3 +388,85 @@ h1 {
     margin-bottom: 5%;
     color: var(--dark-bg);
 }
+
+.popup-background.active {
+    display: block; /* 팝업 활성화 시 표시 */
+}
+
+/* 팝업 모달 스타일 */
+body.popup-active {
+    backdrop-filter: blur(5px) !important; /* 팝업 활성화 시 화면 흐리게 */
+    overflow: hidden; /* 스크롤 방지 */
+    transition: backdrop-filter 0.3s ease; /* 효과 부드럽게 */
+}
+body.popup-active::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* 어두운 반투명 */
+    z-index: 1500; /* 팝업 뒤에 배경 */
+}
+
+.popup {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    z-index: 2000;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    max-width: 90%; /* 작은 화면에서도 적절히 표시 */
+    width: 400px; /* 기본 너비 */
+    animation: fadeIn 0.3s ease-out; /* 팝업 표시 애니메이션 */
+}
+
+/* 숨김 처리 */
+.popup.hidden {
+    display: none;
+}
+
+/* 팝업 내부 버튼 스타일 */
+.popup-content button {
+    background-color: #1DB954; /* Spotify 그린 */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.popup-content button:hover {
+    background-color: #1ED760; /* 밝은 그린 */
+}
+
+/* 팝업 버튼 배치 */
+.popup-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%; /* 버튼이 팝업 너비에 맞게 배치 */
+    gap: 10px; /* 버튼 간격 */
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -45%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}

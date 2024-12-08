@@ -1,6 +1,7 @@
 import { getAccessToken, fetchSpotifySearchResults } from "./main_api.js";
 import { updatePiP, showPiP, hidePiP } from "./main_pip.js";
 import { renderGenreButtons } from "./genre.js";
+import { setupLoginPopup, showLoginPopup } from "./main_login.js";
 
 // Music 클래스 정의
 class Music {
@@ -12,8 +13,32 @@ class Music {
     }
 }
 
+// 로그인 팝업 설정
+document.addEventListener("DOMContentLoaded", () => {
+    setupLoginPopup(null, [".large-box", ".medium-box"]);
+
+    document.addEventListener("click", (e) => {
+        const target = e.target.closest(".large-box, .medium-box");
+        if (target) {
+            const isLoggedIn = false; // 임시 설정
+            if (!isLoggedIn) {
+                e.preventDefault();
+                showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
+            } else {
+                console.log("재생 시작");
+            }
+        }
+    });
+});
+
 // 음원 박스 클릭 시 PiP 업데이트 및 표시
 function playMusic(music) {
+    const isLoggedIn = false; // 임시 설정
+    if (!isLoggedIn) {
+        showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
+        return;
+    }
+
     updatePiP(music); // PiP 업데이트
     showPiP(); // PiP 표시
 }
