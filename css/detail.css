@@ -1,0 +1,178 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    margin: 0;
+    position: relative;
+}
+
+.background-lines {
+    display: flex;
+    width: 100%; /* 화면 전체 가로 길이 */
+    position: absolute;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    z-index: 0;
+    top: -10%;
+}
+
+.background-lines .line {
+    height: 5px; /* 선의 두께 */
+    width: 100%; /* 선의 가로 길이 */
+    background-color: #C19E3F; /* 금색 */
+    margin-bottom: 20px; /* 두 줄 사이의 간격 */
+}
+
+.background-lines .line:last-child {
+    margin-bottom: 0;
+}
+
+.main-container {
+    position: relative;
+    width: 100%; /* 화면 전체 너비 */
+    height: 100%; /* 화면 전체 높이 */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 가로 중앙 정렬 */
+    transition: transform 0.5s ease; /* 메인 컨테이너 이동 효과 */
+}
+
+.record-container {
+    position: absolute; /* 화면 중앙에 고정 */
+    top: 40%; /* 화면 높이의 50% */
+    left: 50%; /* 화면 너비의 50% */
+    transform: translate(-50%, -50%); /* 정확히 중앙 배치 */
+    z-index: 1; /* 다른 요소 위에 배치 */
+}
+
+.record {
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background-image: url('images/record.jpg'); /* 여기에 레코드 이미지 경로를 입력하세요 */
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    animation: spin 5s linear infinite;
+    overflow: hidden;
+}
+
+.album-cover {
+    position: absolute;
+    inset: 25%;
+    width: 50%;
+    height: 50%;
+    border-radius: 50%;
+}
+
+.side-buttons {
+    display: flex;
+    flex-direction: column; /* 버튼들을 세로로 정렬 */
+    gap: 10px; /* 버튼 간 간격 */
+    position: fixed; /* 화면 기준으로 위치 고정 */
+    top: 40%;
+    right: 50px;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
+.side-buttons button {
+    border: none; /* 테두리 제거 */
+    background-color: #000; /* 까만 배경 */
+    color: #fff; /* 흰색 텍스트 */
+    font-size: 16px; /* 텍스트 크기 */
+    font-weight: bold; /* 텍스트 강조 */
+    padding: 10px 20px; /* 버튼 내부 여백 */
+    cursor: pointer; /* 커서 모양 */
+    transition: background-color 0.3s, transform 0.3s; /* 호버 시 배경색 변화 및 크기 조정 */
+    width: 120px; /* 버튼 너비 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    border-radius: 5px; /* 약간의 둥근 모서리 */
+}
+
+.side-buttons button:hover {
+    background-color: #444; /* 호버 시 밝은 색으로 변경 */
+    transform: scale(1.05); /* 약간 확대 */
+}
+
+.side-panel {
+    position: fixed;
+    top: 50%; /* 화면 중앙 */
+    right: 300px; /* 오른쪽에서 50px */
+    text-align: center;
+    transform: translateY(-50%); /* 수직 중앙 정렬 */
+    opacity: 0; /* 초기 투명 상태 */
+    width: 500px; /* 패널 너비 */
+    height: 80%; /* 화면 높이의 80% */
+    background-color: inherit; /* 패널 배경 */
+    color: #000;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    z-index: 1;
+    padding: 20px; /* 내부 여백 */
+    box-sizing: border-box;
+    overflow-y: auto; /* 내용 스크롤 */
+    transition: opacity 0.5s ease; /* 투명도 애니메이션 */
+    box-shadow: none; /* 그림자 없애기 */
+    font-weight: bold;
+}
+
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.song-info {
+    position: absolute; /* 아래로 배치 */
+    bottom: 13%; /* 화면 하단 기준 */
+    width: 100%; /* 전체 너비 */
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 가로 중앙 정렬 */
+    gap: 0px; /* 줄 간 간격 */
+    z-index: 0;
+}
+
+.title-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 50%;
+    overflow: hidden; /* 긴 제목이 영역 밖으로 나가지 않도록 설정 */
+}
+
+.scroll-container {
+    flex: 1; /* 제목 컨테이너가 가능한 넓은 공간을 차지하도록 설정 */
+    overflow: hidden; /* 텍스트가 컨테이너 밖으로 나가지 않도록 설정 */
+    white-space: nowrap; /* 텍스트가 한 줄로 유지되도록 설정 */
+    display: flex;
+}
+
+#song-title {
+    display: inline-block; /* 애니메이션을 적용하기 위해 inline-block 설정 */
+    will-change: transform;
+}
+
+#like-count {
+    flex-shrink: 0; /* 좋아요 수가 줄어들지 않도록 설정 */
+    margin-left: 10px;
+    text-align: center;
+}
+
+/* 스크롤 애니메이션 */
+@keyframes scroll-title {
+    0% {
+        transform: translateX(100%); /* 제목이 오른쪽 밖에서 시작 */
+    }
+    100% {
+        transform: translateX(-100%); /* 제목이 왼쪽 밖으로 사라짐 */
+    }
+}

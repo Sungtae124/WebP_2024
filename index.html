@@ -43,6 +43,13 @@
             <div>
                 <button id="login-button">로그인</button>
                 <button id="cancel-button">취소</button>
+              
+                <script type="module">
+        import { login } from './js/auth.js';
+
+        // 버튼 클릭 시 login 함수 호출
+        document.getElementById("login-button").addEventListener("click", login);
+    </script>
             </div>
         </div>
     </div>
