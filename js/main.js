@@ -1,8 +1,9 @@
-import { getAccessToken, fetchSpotifySearchResults } from "./main_api.js";
+import { getAccessTokenWithoutLogin, fetchSpotifySearchResults } from "./main_api.js";
 import { updatePiP, showPiP, hidePiP } from "./main_pip.js";
 import { renderGenreButtons } from "./genre.js";
 import { setupLoginPopup, showLoginPopup } from "./main_login.js";
 import { setupSearchBar } from "./search.js";
+import { getAccessToken } from "./api.js";
 
 // Music 클래스 정의
 class Music {
@@ -32,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", (e) => {
         const target = e.target.closest(".large-box, .medium-box");
         if (target) {
-            const isLoggedIn = false; // 임시 설정
+            const isLoggedIn = true; // 임시 설정
             if (!isLoggedIn) {
                 e.preventDefault();
                 showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
@@ -45,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // 음원 박스 클릭 시 PiP 업데이트 및 표시
 function playMusic(music) {
-    const isLoggedIn = false; // 임시 설정
+    const isLoggedIn = getAccessToken;
     if (!isLoggedIn) {
         showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
         return;
@@ -121,7 +122,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const genre = urlParams.get("genre") || "한국 인디 밴드"; // 기본 검색어
 
-    const token = await getAccessToken();
+    const token = await getAccessTokenWithoutLogin();
     if (token) {
         const { tracks, albums, artists } = await fetchSpotifySearchResults(genre, token);
         renderMusicBoxes(tracks, albums, artists);

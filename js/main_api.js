@@ -16,7 +16,7 @@ async function loadKeys() {
 }
 
 // Access Token 발급 함수
-export async function getAccessToken() {
+export async function getAccessTokenWithoutLogin() {
     if (cachedAccessToken && tokenExpiryTime > Date.now()) {
         return cachedAccessToken; // 유효한 캐시된 토큰 반환
     }
@@ -40,6 +40,7 @@ export async function getAccessToken() {
         if (response.ok) {
             cachedAccessToken = data.access_token;
             tokenExpiryTime = Date.now() + data.expires_in * 1000;
+            //console.log(cachedAccessToken);
             return cachedAccessToken;
         } else {
             console.error("Access Token 발급 실패:", data);

@@ -38,18 +38,18 @@
     <div id="login-popup" class="popup hidden">
         <div class="popup-content">
             <p id="login-message">음악을 재생하려면 로그인하세요.</p>
-            <input type="text" id="username" placeholder="사용자 이름" />
-            <input type="password" id="password" placeholder="비밀번호" />
+            <!-- <input type="text" id="username" placeholder="사용자 이름" /> -->
+            <!-- <input type="password" id="password" placeholder="비밀번호" /> -->
             <div>
                 <button id="login-button">로그인</button>
                 <button id="cancel-button">취소</button>
-              
-                <script type="module">
-        import { login } from './js/auth.js';
 
-        // 버튼 클릭 시 login 함수 호출
-        document.getElementById("login-button").addEventListener("click", login);
-    </script>
+                <script type="module">
+                import { login } from './js/auth.js';
+
+                // 버튼 클릭 시 login 함수 호출
+                document.getElementById("login-button").addEventListener("click", login);
+                </script>
             </div>
         </div>
     </div>

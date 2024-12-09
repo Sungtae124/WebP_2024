@@ -1,4 +1,4 @@
-import { getAccessToken, fetchSpotifySuggestions } from "./main_api.js";
+import { getAccessTokenWithoutLogin, fetchSpotifySuggestions } from "./main_api.js";
 
 // 검색창 요소와 추천 검색어 박스 선택
 const searchBar = document.getElementById("search-bar");
@@ -99,7 +99,7 @@ export function setupSearchBar(searchBar, suggestionsBox) {
                 return;
             }
 
-            const token = await getAccessToken(); // Access Token 발급
+            const token = await getAccessTokenWithoutLogin(); // Access Token 발급
             if (!token) {
                 console.error("Access Token 발급 실패.");
                 return;

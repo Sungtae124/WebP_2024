@@ -1,4 +1,4 @@
-import { getAccessToken } from "./main_api.js";
+import { getAccessTokenWithoutLogin } from "./main_api.js";
 
 // 장르 데이터
 const genres = ["k-pop", "hip-hop", "jazz", "pop"];
@@ -58,7 +58,7 @@ export async function renderGenreButtons() {
     const genreContainer = document.getElementById("genre-buttons");
     genreContainer.innerHTML = ""; // 기존 내용 초기화
 
-    const token = await getAccessToken();
+    const token = await getAccessTokenWithoutLogin();
     if (!token) {
         console.error("Spotify Access Token 발급 실패");
         return;

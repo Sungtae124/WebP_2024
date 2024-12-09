@@ -1,3 +1,5 @@
+import { login } from "./auth.js";
+
 // 팝업 표시 함수
 export function showLoginPopup(message) {
     const loginPopup = document.getElementById("login-popup");
@@ -18,11 +20,12 @@ export function hideLoginPopup() {
 export function setupLoginPopup(playButtonsSelector, triggerSelectors) {
     const loginButton = document.getElementById("login-button");
     const cancelButton = document.getElementById("cancel-button");
-    const usernameInput = document.getElementById("username");
-    const passwordInput = document.getElementById("password");
+    //const usernameInput = document.getElementById("username");
+    //const passwordInput = document.getElementById("password");
 
     // 로그인 요청 함수 (임시)
     function handleLogin() {
+        /*
         const username = usernameInput.value.trim();
         const password = passwordInput.value.trim();
 
@@ -30,8 +33,9 @@ export function setupLoginPopup(playButtonsSelector, triggerSelectors) {
             console.log("로그인 실패: 사용자 이름 또는 비밀번호가 비어 있습니다.");
             return;
         }
-
-        console.log(`로그인 요청: ${username}, ${password}`);
+*/
+        //console.log(`로그인 요청: ${username}, ${password}`);
+        login()
         hideLoginPopup();
 
         // 실제 Auth.js 로그인 요청 로직
@@ -41,6 +45,7 @@ export function setupLoginPopup(playButtonsSelector, triggerSelectors) {
     // 로그인 버튼 클릭 이벤트
     loginButton.addEventListener("click", handleLogin);
 
+    /*
     // 엔터 키 입력 시 로그인 처리
     [usernameInput, passwordInput].forEach((input) => {
         input.addEventListener("keyup", (e) => {
@@ -48,7 +53,7 @@ export function setupLoginPopup(playButtonsSelector, triggerSelectors) {
                 handleLogin();
             }
         });
-    });
+    });*/
 
     // 팝업 취소 버튼
     cancelButton.addEventListener("click", hideLoginPopup);
