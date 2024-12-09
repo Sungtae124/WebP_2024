@@ -52,7 +52,7 @@ body {
     width: 500px;
     height: 500px;
     border-radius: 50%;
-    background-image: url('images/record.jpg'); /* 여기에 레코드 이미지 경로를 입력하세요 */
+    background-image: url('./images/record.jpg'); /* 여기에 레코드 이미지 경로를 입력하세요 */
     background-size: cover;
     background-position: center;
     overflow: hidden;
