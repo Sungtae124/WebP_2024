@@ -1,6 +1,19 @@
 import { getAccessToken, fetchSpotifySearchResults } from "./main_api.js";
 import { updatePiP, showPiP, hidePiP } from "./main_pip.js";
 import { setupLoginPopup, showLoginPopup } from "./main_login.js";
+import { setupSearchBar } from "./search.js";
+
+// 검색창 요소와 추천 검색어 박스 선택 - DOM 요소 가져오기
+const searchBar = document.getElementById("search-bar");
+const suggestionsBox = document.getElementById("suggestions");
+
+// 추천 검색어 및 검색창 설정
+if (searchBar && suggestionsBox) {
+    console.log("검색창 및 추천 검색어 박스 초기화 완료 (결과 페이지)");
+    setupSearchBar(searchBar, suggestionsBox);
+} else {
+    console.error("검색창 또는 추천 검색어 박스가 초기화되지 않았습니다.");
+}
 
 // 로그인 팝업 설정
 document.addEventListener("DOMContentLoaded", () => {
@@ -22,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // PiP를 업데이트하고 보이도록 설정하는 함수
 function playMusic(music) {
-    const isLoggedIn = true; // 임시 설정
+    const isLoggedIn = false; // 임시 설정
     if (!isLoggedIn) {
         showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
         return;
@@ -82,15 +95,20 @@ async function fetchAndRenderSearchResults(query) {
 
 // 검색 버튼 클릭 이벤트
 document.getElementById("search-button").addEventListener("click", async () => {
-    const query = document.getElementById("search-bar").value.trim();
+    const query = searchBar.value.trim();
     if (query) {
-        await fetchAndRenderSearchResults(query);
+        //suggestionsBox.style.display = "none"; // 추천 검색어 창 숨기기
+        window.location.href = `result.html?query=${encodeURIComponent(query)}`;
     }
 });
 
-// 초기 검색어로 페이지 로드
+// 메인 페이지 검색 결과 or 초기 검색어로 페이지 로드
 document.addEventListener("DOMContentLoaded", async () => {
     hidePiP();
-    const defaultQuery = "한국 인디 밴드"; // 기본 검색어
-    await fetchAndRenderSearchResults(defaultQuery);
+
+    // URL에서 검색어 읽기
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get("query") || "한국 인디 밴드"; // 기본값 설정
+
+    await fetchAndRenderSearchResults(query);
 });

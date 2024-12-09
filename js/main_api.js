@@ -121,6 +121,8 @@ export async function fetchSpotifySuggestions(query, token) {
     )}&type=track&limit=5`;
 
     try {
+        console.log("Spotify API 요청 URL:", url);
+
         const response = await fetch(url, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -133,6 +135,8 @@ export async function fetchSpotifySuggestions(query, token) {
         }
 
         const data = await response.json();
+        console.log("Spotify API 응답 데이터:", data);
+        
         return data.tracks.items.map((track) => ({
             name: track.name,
             artist: track.artists[0]?.name,
