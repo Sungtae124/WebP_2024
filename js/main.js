@@ -2,6 +2,7 @@ import { getAccessToken, fetchSpotifySearchResults } from "./main_api.js";
 import { updatePiP, showPiP, hidePiP } from "./main_pip.js";
 import { renderGenreButtons } from "./genre.js";
 import { setupLoginPopup, showLoginPopup } from "./main_login.js";
+import { setupSearchBar } from "./search.js";
 
 // Music 클래스 정의
 class Music {
@@ -11,6 +12,20 @@ class Music {
         this.trackName = trackName || "Unknown Track"; // 트랙명
         this.artistName = artistName || "Unknown Artist"; // 아티스트 이름
     }
+}
+
+// 검색창 요소와 추천 검색어 박스 선택 - DOM 요소 가져오기
+const searchBar = document.getElementById("search-bar");
+const suggestionsBox = document.getElementById("suggestions");
+
+// 추천 검색어 및 검색창 설정
+//setupSearchBar(searchBar, suggestionsBox);
+
+if (searchBar && suggestionsBox) {
+    console.log("검색창 및 추천 검색어 박스 초기화 완료");
+    setupSearchBar(searchBar, suggestionsBox);
+} else {
+    console.error("검색창 또는 추천 검색어 박스가 초기화되지 않았습니다.");
 }
 
 // 로그인 팝업 설정
