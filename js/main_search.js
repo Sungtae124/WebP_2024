@@ -45,6 +45,24 @@ function renderSuggestions(suggestions) {
     suggestionsBox.style.display = "block"; // 추천 검색어 창 보이기
 }
 
+// 추천 검색어 클릭 이벤트
+suggestionsBox.addEventListener("click", (event) => {
+    const target = event.target.closest(".suggestion-box");
+    if (target) {
+        const query = target.querySelector("span").textContent.trim();
+        window.location.href = `result.html?query=${encodeURIComponent(query)}`;
+    }
+});
+
+// 검색창 엔터 입력 이벤트
+searchBar.addEventListener("keyup", (event) => {
+    if (event.key === "Enter") {
+        const query = searchBar.value.trim();
+        if (query) {
+            window.location.href = `result.html?query=${encodeURIComponent(query)}`;
+        }
+    }
+});
 
 // 검색창 이벤트 리스너 설정
 searchBar.addEventListener("focus", setDefaultSuggestion);

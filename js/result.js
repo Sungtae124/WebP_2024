@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // PiP를 업데이트하고 보이도록 설정하는 함수
 function playMusic(music) {
-    const isLoggedIn = true; // 임시 설정
+    const isLoggedIn = false; // 임시 설정
     if (!isLoggedIn) {
         showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
         return;
@@ -88,9 +88,13 @@ document.getElementById("search-button").addEventListener("click", async () => {
     }
 });
 
-// 초기 검색어로 페이지 로드
+// 메인 페이지 검색 결과 or 초기 검색어로 페이지 로드
 document.addEventListener("DOMContentLoaded", async () => {
     hidePiP();
-    const defaultQuery = "한국 인디 밴드"; // 기본 검색어
-    await fetchAndRenderSearchResults(defaultQuery);
+
+    // URL에서 검색어 읽기
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get("query") || "한국 인디 밴드"; // 기본값 설정
+
+    await fetchAndRenderSearchResults(query);
 });
