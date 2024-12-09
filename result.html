@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playmingo - Search Results</title>
+    <link rel="stylesheet" href="css/result_styles.css">
+</head>
+<body>
+    <header>
+        <h1>Playmingo</h1>
+        <input type="text" id="search-bar" placeholder="검색어를 입력하세요..." autocomplete="off">
+        <button id="search-button">검색</button>
+        <!-- 추천 검색어 표시 영역 -->
+        <div id="suggestions"></div>
+    </header>
+
+    <main>
+        <section id="search-results" class="result-grid">
+            <!-- 검색 결과 박스가 동적으로 추가됩니다 -->
+        </section>
+    </main>
+
+    <!-- 로그인 팝업 -->
+    <div id="login-popup" class="popup hidden">
+        <div class="popup-content">
+            <p id="login-message">음악을 재생하려면 로그인하세요.</p>
+            <input type="text" id="username" placeholder="사용자 이름" />
+            <input type="password" id="password" placeholder="비밀번호" />
+            <div>
+                <button id="login-button">로그인</button>
+                <button id="cancel-button">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <aside id="pip">
+        <img src="/default/default-album.png" alt="앨범 커버" class="album-cover">
+        <div class="music-info">
+            <p>곡 제목 - 가수</p>
+        </div>
+    </aside>
+    
+    <script type="module" src="js/result.js"></script>
+</body>
+</html>

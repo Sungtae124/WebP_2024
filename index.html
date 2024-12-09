@@ -2,18 +2,61 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>index</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playmingo - Music Recommendation</title>
+    <link rel="stylesheet" href="css/main_styles.css">
 </head>
 <body>
-    <a href="detail.html">ㄱ</a>
-    <a href="playlist.html">ㄴ</a>
-    <button id="login-button">Login with Spotify</button> <!-- 로그인 버튼 -->
+    <!-- 검색창 -->
+    <header>
+        <h1>Playmingo</h1>
+        <input type="text" id="search-bar" placeholder="음악 검색..." autocomplete="off" />
+        <!-- 추천 검색어 표시 영역 -->
+        <div id="suggestions"></div>
+    </header>
 
-    <script type="module">
+    <main>
+        <section class="recommendation-grid">
+            <!-- 박스들이 JavaScript를 통해 동적으로 추가됩니다 -->
+        </section>
+        <!-- 다른 장르 추천 -->
+        <section id="genre-buttons" class="result-grid">
+            <!-- JavaScript가 동적으로 추가 -->
+        </section>
+
+        <aside id="pip">
+            <img src="/default/default-album.png" alt="앨범 자켓" class="album-cover">
+            <div class="music-info">
+                <p> Title - singer</p>
+                <progress value="30" max="100"></progress>
+            </div>
+            <button id="expand-button">확대</button>
+        </aside>
+    </main>
+
+    <!-- 로그인 팝업 -->
+    <div id="login-popup" class="popup hidden">
+        <div class="popup-content">
+            <p id="login-message">음악을 재생하려면 로그인하세요.</p>
+            <input type="text" id="username" placeholder="사용자 이름" />
+            <input type="password" id="password" placeholder="비밀번호" />
+            <div>
+                <button id="login-button">로그인</button>
+                <button id="cancel-button">취소</button>
+              
+                <script type="module">
         import { login } from './js/auth.js';
 
         // 버튼 클릭 시 login 함수 호출
         document.getElementById("login-button").addEventListener("click", login);
     </script>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module" src="js/search.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/main_api.js"></script>
+    <script type="module" src="js/genre.js"></script>
 </body>
 </html>

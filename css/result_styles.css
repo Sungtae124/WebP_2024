@@ -1,0 +1,285 @@
+:root {
+    --dark-bg: #080F17;
+    --accent: #7A735B;
+    --highlight: #EED9BA;
+    --gold: #C19E3F;
+    --light-bg: #f5f5f5;
+    --box-bg: #ffffff;
+}
+
+body {
+    background-color: var(--light-bg);
+    color: var(--dark-bg);
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+header {
+    position: relative;
+    background-color: var(--dark-bg);
+    color: var(--highlight);
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+h1 {
+    font-size: 24px;
+}
+
+#search-bar {
+    width: clamp(200px, 30vw, 500px);
+    padding: 10px;
+    background-color: var(--accent);
+    border: none;
+    color: var(--highlight);
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+#search-bar::placeholder {
+    color: var(--highlight);
+    opacity: 0.8;
+    font-style: italic;
+}
+
+#search-button {
+    background-color: var(--highlight);
+    color: var(--dark-bg);
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+#search-button:hover {
+    background-color: var(--gold);
+}
+
+/* 추천 검색어 박스 */
+#suggestions {
+    display: none; /* 기본적으로 숨김 */
+    position: absolute;
+    top: calc(100% + 5px); /* 검색창 바로 아래 위치 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 500px; /* 검색창 최대 폭과 동일 */
+    background-color: var(--light-bg);
+    border: 1px solid var(--accent);
+    border-radius: 5px;
+    z-index: 2000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* overflow: hidden; */
+}
+
+/* 추천 검색어 박스 내부 */
+.suggestion-box {
+    display: flex; /* 이미지와 텍스트를 가로로 정렬 */
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* 마지막 추천 검색어 박스의 테두리 제거 */
+.suggestion-box:last-child {
+    border-bottom: none;
+}
+
+/* 앨범 커버 이미지 스타일 */
+.suggestion-box img.suggestion-img {
+    width: 20%; /* 박스 너비의 20% */
+    height: 100%;
+    border-radius: 5px;
+    margin-right: 10px;
+    object-fit: contain; /* 비율 유지 */
+}
+
+/* 추천 검색어 텍스트 */
+.suggestion-box span {
+    flex: 1; /* 나머지 공간을 차지 */
+    font-size: 14px; /* 텍스트 크기 */
+    color: var(--dark-bg);
+    white-space: nowrap; /* 텍스트 한 줄로 유지 */
+    overflow: hidden; /* 텍스트 오버플로우 숨김 */
+    text-overflow: ellipsis; /* 오버플로우된 텍스트에 말줄임표 표시 */
+}
+
+.suggestion-box:hover {
+    background-color: #f0f0f0; /* 박스 hover 효과 */
+}
+
+.result-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 한 줄에 4개 */
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.result-box {
+    background-color: var(--box-bg);
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.result-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.result-box img {
+    width: 100%;
+    height: 60%; /* 이미지 높이 제한 */
+    object-fit: cover;
+}
+
+.result-info {
+    padding: 10px;
+    text-align: center;
+}
+
+.result-info h4 {
+    font-size: 16px;
+    margin: 5px 0;
+    color: #333;
+}
+
+.result-info p {
+    font-size: 14px;
+    color: #666;
+}
+
+/* PiP 스타일 */
+#pip {
+    display: none; /* 초기에는 숨김 */
+    position: fixed;
+    width: clamp(200px, 20vw, 400px); /* 최소 200px, 최대 400px */
+    bottom: 20px; /* 화면 하단에서 20px */
+    right: 20px; /* 화면 우측에서 20px */
+    background-color: var(--dark-bg);
+    color: var(--highlight);
+    padding: 15px;
+    flex-direction: row; /* 이미지와 텍스트를 가로로 배치 */
+    align-items: center;
+    border-radius: 10px;
+    border: 1px solid var(--gold);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* PiP의 앨범 커버 */
+#pip .album-cover {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    margin-right: 15px;
+    object-fit: cover;
+}
+
+/* PiP의 텍스트 */
+#pip .music-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#pip .music-info p {
+    font-size: clamp(0.9rem, 1vw, 1.2rem);
+    line-height: 1.4;
+    color: var(--highlight);
+    margin: 0;
+}
+
+/* 팝업 모달 스타일 */
+body.popup-active {
+    backdrop-filter: blur(5px) !important; /* 팝업 활성화 시 화면 흐리게 */
+    overflow: hidden; /* 스크롤 방지 */
+    transition: backdrop-filter 0.3s ease; /* 효과 부드럽게 */
+}
+body.popup-active::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* 어두운 반투명 */
+    z-index: 2000; /* 팝업 뒤에 배경 */
+}
+
+.popup {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    z-index: 2000;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    max-width: 90%; /* 작은 화면에서도 적절히 표시 */
+    width: 400px; /* 기본 너비 */
+    animation: fadeIn 0.3s ease-out; /* 팝업 표시 애니메이션 */
+}
+
+/* 숨김 처리 */
+.popup.hidden {
+    display: none;
+}
+
+/* 팝업 내부 버튼 스타일 */
+.popup-content button {
+    background-color: #1DB954; /* Spotify 그린 */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.popup-content button:hover {
+    background-color: #1ED760; /* 밝은 그린 */
+}
+
+/* 팝업 버튼 배치 */
+.popup-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%; /* 버튼이 팝업 너비에 맞게 배치 */
+    gap: 10px; /* 버튼 간격 */
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -45%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
