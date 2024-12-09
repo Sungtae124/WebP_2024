@@ -1,6 +1,19 @@
 import { getAccessToken, fetchSpotifySearchResults } from "./main_api.js";
 import { updatePiP, showPiP, hidePiP } from "./main_pip.js";
 import { setupLoginPopup, showLoginPopup } from "./main_login.js";
+import { setupSearchBar } from "./search.js";
+
+// 검색창 요소와 추천 검색어 박스 선택 - DOM 요소 가져오기
+const searchBar = document.getElementById("search-bar");
+const suggestionsBox = document.getElementById("suggestions");
+
+// 추천 검색어 및 검색창 설정
+if (searchBar && suggestionsBox) {
+    console.log("검색창 및 추천 검색어 박스 초기화 완료 (결과 페이지)");
+    setupSearchBar(searchBar, suggestionsBox);
+} else {
+    console.error("검색창 또는 추천 검색어 박스가 초기화되지 않았습니다.");
+}
 
 // 로그인 팝업 설정
 document.addEventListener("DOMContentLoaded", () => {
@@ -82,9 +95,10 @@ async function fetchAndRenderSearchResults(query) {
 
 // 검색 버튼 클릭 이벤트
 document.getElementById("search-button").addEventListener("click", async () => {
-    const query = document.getElementById("search-bar").value.trim();
+    const query = searchBar.value.trim();
     if (query) {
-        await fetchAndRenderSearchResults(query);
+        //suggestionsBox.style.display = "none"; // 추천 검색어 창 숨기기
+        window.location.href = `result.html?query=${encodeURIComponent(query)}`;
     }
 });
 
