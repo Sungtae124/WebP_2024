@@ -255,6 +255,7 @@ h1 {
 
 /* PiP 스타일 */
 #pip {
+    display: none; /* 초기에는 숨김 */
     position: fixed;
     width: clamp(200px, 30vw, 500px); /* 최소 200px, 최대 500px로 가로 크기 조정 */
     bottom: 10px;
@@ -326,22 +327,142 @@ h1 {
     background-color: var(--gold);
 }
 
-/* 다른 장르 추천 */
-#other-genres {
-    display: flex;
-    justify-content: space-around;
-    padding: 20px;
+/* 장르 버튼 스타일 */
+#genre-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 5%;
+    max-width: 1300px;
+    margin: 0 auto;
 }
 
-.genre {
+.genre-box {
+    background-color: var(--box-bg);
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
     padding: 10px;
-    background-color: var(--gold);
+    position: relative;
+    cursor: pointer;
+    height: 200px;
+    overflow: hidden;
+}
+
+.genre-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.album-stack {
+    position: relative;
+    height: 70%; /* 앨범 이미지 영역 높이 */
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-start; /* 겹침 시작 위치 */
+    align-items: center;
+    overflow: hidden;
+}
+
+.album-stack img {
+    border-radius: 5%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    height: 100%; /* 스택 높이에 맞춤 */
+    aspect-ratio: 1 / 1; /* 1:1 비율 유지 */
+    position: absolute;
+    object-fit: cover;
+    transition: left 0.3s ease, transform 0.3s ease;
+}
+
+/* 가장 앞 이미지 강조 스타일 */
+.album-stack img:first-child {
+    transform: scale(1.0); /* 크기 유지 */
+    z-index: 10; /* 가장 위에 표시 */
+}
+
+.genre-text {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 5%; /* 이미지 아래에 텍스트 배치 */
+    margin-bottom: 5%;
     color: var(--dark-bg);
-    border-radius: 8px;
+}
+
+/* 팝업 모달 스타일 */
+body.popup-active {
+    backdrop-filter: blur(5px) !important; /* 팝업 활성화 시 화면 흐리게 */
+    overflow: hidden; /* 스크롤 방지 */
+    transition: backdrop-filter 0.3s ease; /* 효과 부드럽게 */
+}
+body.popup-active::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* 어두운 반투명 */
+    z-index: 1500; /* 팝업 뒤에 배경 */
+}
+
+.popup {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    z-index: 2000;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    max-width: 90%; /* 작은 화면에서도 적절히 표시 */
+    width: 400px; /* 기본 너비 */
+    animation: fadeIn 0.3s ease-out; /* 팝업 표시 애니메이션 */
+}
+
+/* 숨김 처리 */
+.popup.hidden {
+    display: none;
+}
+
+/* 팝업 내부 버튼 스타일 */
+.popup-content button {
+    background-color: #1DB954; /* Spotify 그린 */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-.genre:hover {
-    background-color: var(--highlight);
+.popup-content button:hover {
+    background-color: #1ED760; /* 밝은 그린 */
+}
+
+/* 팝업 버튼 배치 */
+.popup-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%; /* 버튼이 팝업 너비에 맞게 배치 */
+    gap: 10px; /* 버튼 간격 */
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -45%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
 }

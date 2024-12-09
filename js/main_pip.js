@@ -10,15 +10,33 @@ export function updatePiP(music) {
 
     // PiP 요소 업데이트
     pipImage.src = music.albumImage || "/default/default-album.png"; // 기본 이미지 경로
-    pipImage.alt = `${music.title} - ${music.artist}`;
-    pipTitle.textContent = `${music.title} - ${music.artist}`;
+    pipImage.alt = `${music.trackName} - ${music.artistName}`;
+    pipTitle.textContent = `${music.trackName} - ${music.artistName}`;
 }
 
-// PiP 초기화 함수 (필요할 경우 추가)
+// PiP를 화면에 표시
+export function showPiP() {
+    const pip = document.getElementById("pip");
+    pip.style.display = "flex"; // PiP를 보이도록 설정
+    pip.style.opacity = "1"; // 투명도 설정
+}
+
+// PiP를 화면에서 숨기기
+export function hidePiP() {
+    const pip = document.getElementById("pip");
+    pip.style.display = "none"; // PiP를 숨기도록 설정
+    pip.style.opacity = "0"; // 완전히 숨기기
+}
+
+// PiP 초기화 함수
 export function initializePiP(defaultMusic) {
-    if (!defaultMusic) {
+    const pip = document.getElementById("pip");
+    if (defaultMusic) {
+        updatePiP(defaultMusic); // 기본 음악 정보로 업데이트
+        pip.style.display = "flex"; // 초기화 시 PiP 표시
+        pip.style.opacity = "1";
+    } else {
         console.warn("초기화할 기본 음악 정보가 없습니다.");
-        return;
+        pip.style.display = "none"; // 초기 상태에서는 숨기기
     }
-    updatePiP(defaultMusic);
 }

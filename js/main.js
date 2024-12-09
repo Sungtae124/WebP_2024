@@ -1,5 +1,7 @@
 import { getAccessToken, fetchSpotifySearchResults } from "./main_api.js";
-import { updatePiP, initializePiP } from "./main_pip.js";
+import { updatePiP, showPiP, hidePiP } from "./main_pip.js";
+import { renderGenreButtons } from "./genre.js";
+import { setupLoginPopup, showLoginPopup } from "./main_login.js";
 
 // Music 클래스 정의
 class Music {
@@ -9,6 +11,36 @@ class Music {
         this.trackName = trackName || "Unknown Track"; // 트랙명
         this.artistName = artistName || "Unknown Artist"; // 아티스트 이름
     }
+}
+
+// 로그인 팝업 설정
+document.addEventListener("DOMContentLoaded", () => {
+    setupLoginPopup(null, [".large-box", ".medium-box"]);
+
+    document.addEventListener("click", (e) => {
+        const target = e.target.closest(".large-box, .medium-box");
+        if (target) {
+            const isLoggedIn = false; // 임시 설정
+            if (!isLoggedIn) {
+                e.preventDefault();
+                showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
+            } else {
+                console.log("재생 시작");
+            }
+        }
+    });
+});
+
+// 음원 박스 클릭 시 PiP 업데이트 및 표시
+function playMusic(music) {
+    const isLoggedIn = false; // 임시 설정
+    if (!isLoggedIn) {
+        showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
+        return;
+    }
+
+    updatePiP(music); // PiP 업데이트
+    showPiP(); // PiP 표시
 }
 
 // 추천 목록 박스 렌더링
@@ -28,6 +60,9 @@ function renderMusicBoxes(tracks, albums, artists) {
                 <p>${album.artists[0]?.name}</p>
             </div>
         `;
+        largeBox.addEventListener("click", () => {
+            playMusic(new Music(album.images[0]?.url, album.name, "", album.artists[0]?.name));
+        });
         grid.appendChild(largeBox);
     }
 
@@ -42,6 +77,9 @@ function renderMusicBoxes(tracks, albums, artists) {
                 <p>${track.artists[0]?.name}</p>
             </div>
         `;
+        mediumBox.addEventListener("click", () => {
+            playMusic(new Music(track.album.images[0]?.url, track.album.name, track.name, track.artists[0]?.name));
+        });
         grid.appendChild(mediumBox);
     });
 
@@ -55,46 +93,27 @@ function renderMusicBoxes(tracks, albums, artists) {
                 <h4>${artist.name}</h4>
             </div>
         `;
+        smallBox.addEventListener("click", () => {
+            //playMusic(new Music(artist.images[0]?.url || "/default/default-artist.png", "", "", artist.name));
+            //여기에 아티스트 상세 페이지로 연결하는 기능 추가 필요
+        });
         grid.appendChild(smallBox);
     });
 }
 
-// Spotify 데이터 가져오기 및 렌더링
-async function fetchAndRenderSearchResults(query) {
-    // Access Token 발급
+// 초기 검색 및 데이터 렌더링
+document.addEventListener("DOMContentLoaded", async () => {
+    hidePiP();
+
+    // URL에서 장르 매개변수 읽기
+    const urlParams = new URLSearchParams(window.location.search);
+    const genre = urlParams.get("genre") || "한국 인디 밴드"; // 기본 검색어
+
     const token = await getAccessToken();
-    if (!token) {
-        console.error("Access Token 발급 실패");
-        return;
+    if (token) {
+        const { tracks, albums, artists } = await fetchSpotifySearchResults(genre, token);
+        renderMusicBoxes(tracks, albums, artists);
     }
-
-    // Spotify Search API 호출
-    const { tracks, albums, artists } = await fetchSpotifySearchResults(query, token);
-
-    if (!tracks.length && !albums.length && !artists.length) {
-        console.error("검색 결과가 없습니다.");
-        return;
-    }
-
-    // 데이터를 바탕으로 렌더링
-    renderMusicBoxes(tracks, albums, artists);
-
-    // 초기 PiP 설정
-    if (tracks.length > 0) {
-        const firstTrack = tracks[0];
-        initializePiP(
-            new Music(
-                firstTrack.album.images[0]?.url,
-                firstTrack.album.name,
-                firstTrack.name,
-                firstTrack.artists[0]?.name
-            )
-        );
-    }
-}
-
-// 페이지 로드 시 실행
-document.addEventListener("DOMContentLoaded", () => {
-    const query = "한국 인디 밴드"; // 기본 검색어
-    fetchAndRenderSearchResults(query);
+    // 장르 버튼 렌더링
+    await renderGenreButtons();
 });

@@ -85,7 +85,7 @@ export async function fetchSpotifyRecommendations(genre, token) {
 export async function fetchSpotifySearchResults(query, token) {
     const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(
         query
-    )}&type=track,album,artist&limit=5`;
+    )}&type=track,album,artist&limit=12`;
 
     try {
         const response = await fetch(url, {
