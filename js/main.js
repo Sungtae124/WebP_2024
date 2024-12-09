@@ -18,9 +18,6 @@ class Music {
 const searchBar = document.getElementById("search-bar");
 const suggestionsBox = document.getElementById("suggestions");
 
-// 추천 검색어 및 검색창 설정
-//setupSearchBar(searchBar, suggestionsBox);
-
 if (searchBar && suggestionsBox) {
     console.log("검색창 및 추천 검색어 박스 초기화 완료");
     setupSearchBar(searchBar, suggestionsBox);

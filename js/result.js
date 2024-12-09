@@ -8,14 +8,12 @@ const searchBar = document.getElementById("search-bar");
 const suggestionsBox = document.getElementById("suggestions");
 
 // 추천 검색어 및 검색창 설정
-//setupSearchBar(searchBar, suggestionsBox);
 if (searchBar && suggestionsBox) {
     console.log("검색창 및 추천 검색어 박스 초기화 완료 (결과 페이지)");
     setupSearchBar(searchBar, suggestionsBox);
 } else {
     console.error("검색창 또는 추천 검색어 박스가 초기화되지 않았습니다.");
 }
-
 
 // 로그인 팝업 설정
 document.addEventListener("DOMContentLoaded", () => {
@@ -103,16 +101,6 @@ document.getElementById("search-button").addEventListener("click", async () => {
         window.location.href = `result.html?query=${encodeURIComponent(query)}`;
     }
 });
-
-/*
-document.getElementById("search-button").addEventListener("click", async () => {
-    const query = document.getElementById("search-bar").value.trim();
-    if (query) {
-        await fetchAndRenderSearchResults(query);
-    }
-});
-*/
-
 
 // 메인 페이지 검색 결과 or 초기 검색어로 페이지 로드
 document.addEventListener("DOMContentLoaded", async () => {
