@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("트랙 정보 로드 중 오류 발생:", error);
     }
 */
-    if (!trackId) {
+    if (!trackID) {
         console.error("트랙 ID가 없습니다.");
         //alert("트랙 ID가 누락되었습니다. 메인 페이지로 돌아가주세요.");
         return;
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         console.log("Access Token:", accessToken);
 
-        const trackData = fetchTrackDetails(trackId, accessToken);
+        const trackData = fetchTrackDetails(trackID, accessToken);
         
         if (!trackData || !trackData.album || !trackData.artists) {
             throw new Error("트랙 데이터가 비정상적입니다.");
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         //플레이어가 준비되면
         player.addListener('ready', ({ device_id }) => {
-            playTrack(device_id, token, trackId); //곡 재생
+            playTrack(device_id, token, trackID); //곡 재생
         });
 
         //플레이어 상태 변경
@@ -110,11 +110,11 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     //곡 정보 불러오기
-    loadTrackDetails(trackId, accessToken); 
+    loadTrackDetails(trackID, accessToken); 
 
     //버튼들에 패널 클릭 이벤트 할당
     sideButtons.forEach(button => {
-        button.addEventListener("click", (event) => handlePanelClick(event.currentTarget, trackId, accessToken));
+        button.addEventListener("click", (event) => handlePanelClick(event.currentTarget, trackID, accessToken));
     });
 
     //특정 곡 재생
@@ -138,16 +138,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     //곡 정보 불러오기
-    async function loadTrackDetails(trackId, accessToken) {
+    async function loadTrackDetails(trackID, accessToken) {
         try {
-            const trackData = await fetchTrackDetails(trackId, accessToken);
+            const trackData = await fetchTrackDetails(trackID, accessToken);
             updateTrackDetailsUI(trackData); //UI 업데이트
         } catch (error) {
             console.error("트랙 정보 요청 중 오류 발생:", error);
         }
     }
     //패널 클릭 이벤트
-    async function handlePanelClick(button, trackId, accessToken) {
+    async function handlePanelClick(button, trackID, accessToken) {
         if (activeButton === button) {
             closeActivePanel(activePanel, activeButton, mainContainer);
             return;

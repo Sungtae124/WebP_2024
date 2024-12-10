@@ -40,7 +40,7 @@ export async function getAccessTokenWithoutLogin() {
         if (response.ok) {
             cachedAccessToken = data.access_token;
             tokenExpiryTime = Date.now() + data.expires_in * 1000;
-            //console.log(cachedAccessToken);
+            console.log(cachedAccessToken);
             return cachedAccessToken;
         } else {
             console.error("Access Token 발급 실패:", data);
@@ -147,6 +147,7 @@ export async function fetchSpotifySuggestions(query, token) {
         console.log("Spotify API 응답 데이터:", data);
         
         return data.tracks.items.map((track) => ({
+            trackID: track.id,
             name: track.name,
             artist: track.artists[0]?.name,
             albumImage: track.album.images[0]?.url || "/default/default-album.png",

@@ -12,7 +12,7 @@ class Music {
         this.albumImage = albumImage || "/default/default-album.png"; // 앨범 커버
         this.albumName = albumName || "Unknown Album"; // 앨범명
         this.trackName = trackName || "Unknown Track"; // 트랙명
-        this.trackID = trackID || "7pT6WSg4PCt4mr5ZFyUfsF"; // track ID 기본값
+        this.trackID = trackID || "5WYgNDkw0VsDIZwfwQWlXp"; // track ID 기본값
         this.artistName = artistName || "Unknown Artist"; // 아티스트 이름
     }
 }
@@ -67,7 +67,7 @@ function playMusic(music) {
         return;
     }
     console.log("Playing:",music.trackName, "-ID:", music.trackID);
-    //goToDetail(music.trackID); // Detail page로 이동
+    goToDetail(music.trackID); // Detail page로 이동
     updatePiP(music); // PiP 업데이트
     showPiP(); // PiP 표시
 }
