@@ -4,13 +4,15 @@ import { renderGenreButtons } from "./genre.js";
 import { setupLoginPopup, showLoginPopup } from "./main_login.js";
 import { setupSearchBar } from "./search.js";
 import { getAccessToken } from "./api.js";
+//import { goToDetail} from "./detail.js";
 
 // Music 클래스 정의
 class Music {
-    constructor(albumImage, albumName, trackName, artistName) {
+    constructor(albumImage, albumName, trackName, trackID, artistName) {
         this.albumImage = albumImage || "/default/default-album.png"; // 앨범 커버
         this.albumName = albumName || "Unknown Album"; // 앨범명
         this.trackName = trackName || "Unknown Track"; // 트랙명
+        this.trackID = trackID || "7pT6WSg4PCt4mr5ZFyUfsF"; // track ID 기본값
         this.artistName = artistName || "Unknown Artist"; // 아티스트 이름
     }
 }
@@ -44,14 +46,28 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+function goToDetail(trackID) {
+    if (!trackID) {
+        console.error("Detail 페이지로 이동할 수 없습니다. 트랙 ID가 누락되었습니다.");
+        return;
+    }
+    const detailURL = `detail.html?trackID=${encodeURIComponent(trackID)}`;
+    window.location.href = detailURL; // 트랙 ID를 포함해 Detail 페이지로 이동
+}
+
 // 음원 박스 클릭 시 PiP 업데이트 및 표시
 function playMusic(music) {
-    const isLoggedIn = getAccessToken;
+    const isLoggedIn = getAccessToken();
     if (!isLoggedIn) {
         showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
         return;
     }
-
+    if (!music.trackID) {
+        console.error("트랙 ID가 없습니다. 음악 정보를 확인하세요.");
+        return;
+    }
+    console.log("Playing:",music.trackName, "-ID:", music.trackID);
+    //goToDetail(music.trackID); // Detail page로 이동
     updatePiP(music); // PiP 업데이트
     showPiP(); // PiP 표시
 }
@@ -74,7 +90,7 @@ function renderMusicBoxes(tracks, albums, artists) {
             </div>
         `;
         largeBox.addEventListener("click", () => {
-            playMusic(new Music(album.images[0]?.url, album.name, "", album.artists[0]?.name));
+            playMusic(new Music(album.images[0]?.url, album.name, "", "", album.artists[0]?.name));
         });
         grid.appendChild(largeBox);
     }
@@ -91,7 +107,8 @@ function renderMusicBoxes(tracks, albums, artists) {
             </div>
         `;
         mediumBox.addEventListener("click", () => {
-            playMusic(new Music(track.album.images[0]?.url, track.album.name, track.name, track.artists[0]?.name));
+            playMusic(new Music(track.album.images[0]?.url, track.album.name, track.name, track.id, track.artists[0]?.name));
+            //playMusic(music);
         });
         grid.appendChild(mediumBox);
     });

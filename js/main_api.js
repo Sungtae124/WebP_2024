@@ -102,6 +102,14 @@ export async function fetchSpotifySearchResults(query, token) {
 
         const data = await response.json();
 
+        // 전체 데이터 출력
+        console.log("Spotify Search API Data (전체):", data);
+
+        // 각각의 데이터 확인
+        console.log("검색 결과 - Tracks:", data.tracks?.items || []);
+        console.log("검색 결과 - Albums:", data.albums?.items || []);
+        console.log("검색 결과 - Artists:", data.artists?.items || []);
+
         // 검색 결과 정리
         return {
             tracks: data.tracks?.items || [],

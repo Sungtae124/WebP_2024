@@ -3,6 +3,7 @@ import { getAccessToken } from "./api.js";
 import { updatePiP, showPiP, hidePiP } from "./main_pip.js";
 import { setupLoginPopup, showLoginPopup } from "./main_login.js";
 import { setupSearchBar } from "./search.js";
+import { goToDetail } from "./detail.js";
 
 // 검색창 요소와 추천 검색어 박스 선택 - DOM 요소 가져오기
 const searchBar = document.getElementById("search-bar");
@@ -41,7 +42,8 @@ function playMusic(music) {
         showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
         return;
     }
-
+    console.log("Playing:",music.trackName, "-ID:", music.trackID);
+    goToDetail(music.trackID);
     updatePiP(music); // PiP 업데이트
     showPiP(); // PiP 표시
 }
@@ -85,6 +87,7 @@ async function fetchAndRenderSearchResults(query) {
             const music = {
                 albumImage: track.album.images[0]?.url || "/default/default-album.png",
                 trackName: track.name,
+                trackID: track.trackID,
                 artistName: track.artists[0]?.name,
             };
             playMusic(music);

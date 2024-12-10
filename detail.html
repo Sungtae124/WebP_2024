@@ -20,6 +20,13 @@
         <button id="rec">추천</button>
         <button id="next">다음 트랙</button>
         <button id="art">아티스트</button>
+        <button id="login-button">로그인</button>
+        <script type="module">
+            import { login } from './js/auth.js';
+    
+            // 버튼 클릭 시 login 함수 호출
+            document.getElementById("login-button").addEventListener("click", login);
+        </script>
     </div>
     <div class="main-container">
         <div class="record-container">

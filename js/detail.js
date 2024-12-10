@@ -10,6 +10,7 @@ import {
 } from './detail_ui.js';
 import { fetchTrackDetails, fetchArtistDetails, fetchAlbumDetails, fetchRecommendations, getAccessToken } from './api.js';
 
+
 document.addEventListener("DOMContentLoaded", () => {
     const sideButtons = document.querySelectorAll(".side-buttons button");
     const mainContainer = document.querySelector(".main-container");
@@ -17,12 +18,57 @@ document.addEventListener("DOMContentLoaded", () => {
     let activePanel = null; // 현재 활성 패널
     let activeButton = null; // 현재 활성 버튼
 
-    const trackId = "7pT6WSg4PCt4mr5ZFyUfsF"; // 예제 곡 ID
+    const trackId = "5WYgNDkw0VsDIZwfwQWlXp"; //"7pT6WSg4PCt4mr5ZFyUfsF" // 예제 곡 ID
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const trackID = urlParams.get("trackID"); // URL에서 trackID 추출
+
+    /*
+    if (!trackID) {
+        console.error("트랙 ID가 누락되었습니다.", trackId);
+        return;
+    }
     const accessToken = getAccessToken(); //액세스 토큰 가져오기
     if (!accessToken) {
         console.log("Token이 없음");
         return;
     }
+
+    try {
+        const trackData = fetchTrackDetails(trackId, accessToken);
+        updateTrackDetailsUI(trackData); // UI 업데이트
+    } catch (error) {
+        console.error("트랙 정보 로드 중 오류 발생:", error);
+    }
+*/
+    if (!trackId) {
+        console.error("트랙 ID가 없습니다.");
+        //alert("트랙 ID가 누락되었습니다. 메인 페이지로 돌아가주세요.");
+        return;
+    }
+
+    let accessToken;
+    try {
+        accessToken = getAccessToken();
+        if (!accessToken) {
+            throw new Error("액세스 토큰을 가져오지 못했습니다.");
+        }
+
+        console.log("Access Token:", accessToken);
+
+        const trackData = fetchTrackDetails(trackId, accessToken);
+        
+        if (!trackData || !trackData.album || !trackData.artists) {
+            throw new Error("트랙 데이터가 비정상적입니다.");
+        }
+
+        console.log("Track Data:", trackData);
+        updateTrackDetailsUI(trackData);
+    } catch (error) {
+        console.error("트랙 정보 로드 중 오류 발생:", error.message);
+        //alert("트랙 정보를 가져오는 데 실패했습니다. 다시 시도해주세요.");
+    }
+    
 
     //프리미엄 api 초기화
     window.onSpotifyWebPlaybackSDKReady = () => {
@@ -89,6 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("곡 재생 중 오류 발생:", error);
         }
     }
+
 
     //곡 정보 불러오기
     async function loadTrackDetails(trackId, accessToken) {
