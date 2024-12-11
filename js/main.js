@@ -1,5 +1,5 @@
 import { getAccessTokenWithoutLogin, fetchSpotifySearchResults } from "./main_api.js";
-import { updatePiP, showPiP, hidePiP } from "./main_pip.js";
+import { updatePiP, showPiP, hidePiP } from "./pip.js";
 import { renderGenreButtons } from "./genre.js";
 import { setupLoginPopup, showLoginPopup } from "./main_login.js";
 import { setupSearchBar } from "./search.js";
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", (e) => {
         const target = e.target.closest(".large-box, .medium-box");
         if (target) {
-            const isLoggedIn = true; // 임시 설정
+            const isLoggedIn = getAccessToken(); // 임시 설정
             if (!isLoggedIn) {
                 e.preventDefault();
                 showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");

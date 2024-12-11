@@ -1,8 +1,9 @@
 import { getAccessTokenWithoutLogin, fetchSpotifySearchResults } from "./main_api.js";
 import { getAccessToken } from "./api.js";
-import { updatePiP, showPiP, hidePiP } from "./main_pip.js";
+import { initializePiP, updatePiP, showPiP, hidePiP } from "./pip.js";
 import { setupLoginPopup, showLoginPopup } from "./main_login.js";
 import { setupSearchBar } from "./search.js";
+//import { SpotifyPlayer } from "./player.js";
 
 // 검색창 요소와 추천 검색어 박스 선택 - DOM 요소 가져오기
 const searchBar = document.getElementById("search-bar");
@@ -23,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", (e) => {
         const target = e.target.closest(".large-box, .medium-box");
         if (target) {
-            const isLoggedIn = getAccessToken; // 임시 설정
+            const isLoggedIn = getAccessToken(); // 임시 설정
             if (!isLoggedIn) {
                 e.preventDefault();
                 showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
@@ -44,21 +45,24 @@ function goToDetail(trackID) {
 }
 
 // PiP를 업데이트하고 보이도록 설정하는 함수
-function playMusic(music) {
-    const isLoggedIn = getAccessToken; // 임시 설정
+async function playMusic(music) {
+    const isLoggedIn = getAccessToken(); // 임시 설정
     if (!isLoggedIn) {
         showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
         return;
     }
     console.log("Playing:",music.trackName, "-ID:", music.trackID);
-    goToDetail(music.trackID);
+    //goToDetail(music.trackID);
+
+    await initializePiP(getAccessToken(), music);
     updatePiP(music); // PiP 업데이트
     showPiP(); // PiP 표시
 }
 
 // 검색 결과를 동적으로 생성하는 함수
 async function fetchAndRenderSearchResults(query) {
-    const token = await getAccessToken();
+    const token = await getAccessTokenWithoutLogin();
+    console.log(token);
     if (!token) {
         console.error("Access Token 발급 실패");
         return;
@@ -117,7 +121,7 @@ document.getElementById("search-button").addEventListener("click", async () => {
 // 메인 페이지 검색 결과 or 초기 검색어로 페이지 로드
 document.addEventListener("DOMContentLoaded", async () => {
     hidePiP();
-
+    
     // URL에서 검색어 읽기
     const urlParams = new URLSearchParams(window.location.search);
     const query = urlParams.get("query") || "한국 인디 밴드"; // 기본값 설정

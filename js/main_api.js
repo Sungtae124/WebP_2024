@@ -40,7 +40,7 @@ export async function getAccessTokenWithoutLogin() {
         if (response.ok) {
             cachedAccessToken = data.access_token;
             tokenExpiryTime = Date.now() + data.expires_in * 1000;
-            console.log(cachedAccessToken);
+            //console.log(cachedAccessToken);
             return cachedAccessToken;
         } else {
             console.error("Access Token 발급 실패:", data);

@@ -206,6 +206,40 @@ h1 {
     margin: 0;
 }
 
+/* PiP 컨트롤 버튼 */
+#pip .control-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#pip .control-buttons button {
+    background-color: var(--gold);
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: var(--dark-bg);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#pip .control-buttons button:hover {
+    background-color: var(--highlight);
+}
+
+/* PiP의 재생 슬라이더 */
+#pip .progress-bar {
+    width: 100%;
+    height: 5px;
+    margin-top: 5px;
+    appearance: none;
+    background-color: var(--light-bg);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
 /* 팝업 모달 스타일 */
 body.popup-active {
     backdrop-filter: blur(5px) !important; /* 팝업 활성화 시 화면 흐리게 */
