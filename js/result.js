@@ -62,7 +62,7 @@ async function playMusic(music) {
 // 검색 결과를 동적으로 생성하는 함수
 async function fetchAndRenderSearchResults(query) {
     const token = await getAccessTokenWithoutLogin();
-    console.log(token);
+    //console.log(token);
     if (!token) {
         console.error("Access Token 발급 실패");
         return;
@@ -121,7 +121,7 @@ document.getElementById("search-button").addEventListener("click", async () => {
 // 메인 페이지 검색 결과 or 초기 검색어로 페이지 로드
 document.addEventListener("DOMContentLoaded", async () => {
     hidePiP();
-    
+
     // URL에서 검색어 읽기
     const urlParams = new URLSearchParams(window.location.search);
     const query = urlParams.get("query") || "한국 인디 밴드"; // 기본값 설정

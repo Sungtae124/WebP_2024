@@ -200,7 +200,7 @@ h1 {
 }
 
 #pip .music-info p {
-    font-size: clamp(0.9rem, 1vw, 1.2rem);
+    font-size: clamp(0.9rem, 1vw, 1.0rem);
     line-height: 1.4;
     color: var(--highlight);
     margin: 0;
@@ -208,6 +208,7 @@ h1 {
 
 /* PiP 컨트롤 버튼 */
 #pip .control-buttons {
+    flex: 1;
     display: flex;
     gap: 10px;
     align-items: center;
@@ -230,7 +231,7 @@ h1 {
 
 /* PiP의 재생 슬라이더 */
 #pip .progress-bar {
-    width: 100%;
+    width: 90%;
     height: 5px;
     margin-top: 5px;
     appearance: none;

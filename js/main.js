@@ -1,5 +1,5 @@
 import { getAccessTokenWithoutLogin, fetchSpotifySearchResults } from "./main_api.js";
-import { updatePiP, showPiP, hidePiP } from "./pip.js";
+import { initializePiP, updatePiP, showPiP, hidePiP } from "./pip.js";
 import { renderGenreButtons } from "./genre.js";
 import { setupLoginPopup, showLoginPopup } from "./main_login.js";
 import { setupSearchBar } from "./search.js";
@@ -55,7 +55,7 @@ function goToDetail(trackID) {
 }
 
 // 음원 박스 클릭 시 PiP 업데이트 및 표시
-function playMusic(music) {
+async function playMusic(music) {
     const isLoggedIn = getAccessToken();
     if (!isLoggedIn) {
         showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
@@ -66,7 +66,10 @@ function playMusic(music) {
         return;
     }
     console.log("Playing:",music.trackName, "-ID:", music.trackID);
-    goToDetail(music.trackID); // Detail page로 이동
+    
+    //goToDetail(music.trackID); // Detail page로 이동
+    
+    await initializePiP(getAccessToken(), music);
     updatePiP(music); // PiP 업데이트
     showPiP(); // PiP 표시
 }
@@ -107,7 +110,6 @@ function renderMusicBoxes(tracks, albums, artists) {
         `;
         mediumBox.addEventListener("click", () => {
             playMusic(new Music(track.album.images[0]?.url, track.album.name, track.name, track.id, track.artists[0]?.name));
-            //playMusic(music);
         });
         grid.appendChild(mediumBox);
     });
