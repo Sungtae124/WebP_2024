@@ -3,7 +3,6 @@ import { getAccessToken } from "./api.js";
 import { updatePiP, showPiP, hidePiP } from "./main_pip.js";
 import { setupLoginPopup, showLoginPopup } from "./main_login.js";
 import { setupSearchBar } from "./search.js";
-import { goToDetail } from "./detail.js";
 
 // 검색창 요소와 추천 검색어 박스 선택 - DOM 요소 가져오기
 const searchBar = document.getElementById("search-bar");
@@ -34,6 +33,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+function goToDetail(trackID) {
+    if (!trackID) {
+        console.error("Detail 페이지로 이동할 수 없습니다. 트랙 ID가 누락되었습니다.");
+        return;
+    }
+    const detailURL = `detail.html?trackID=${encodeURIComponent(trackID)}`;
+    window.location.href = detailURL; // 트랙 ID를 포함해 Detail 페이지로 이동
+}
 
 // PiP를 업데이트하고 보이도록 설정하는 함수
 function playMusic(music) {
@@ -87,7 +95,7 @@ async function fetchAndRenderSearchResults(query) {
             const music = {
                 albumImage: track.album.images[0]?.url || "/default/default-album.png",
                 trackName: track.name,
-                trackID: track.trackID,
+                trackID: track.id,
                 artistName: track.artists[0]?.name,
             };
             playMusic(music);

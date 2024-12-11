@@ -4,7 +4,6 @@ import { renderGenreButtons } from "./genre.js";
 import { setupLoginPopup, showLoginPopup } from "./main_login.js";
 import { setupSearchBar } from "./search.js";
 import { getAccessToken } from "./api.js";
-//import { goToDetail} from "./detail.js";
 
 // Music 클래스 정의
 class Music {

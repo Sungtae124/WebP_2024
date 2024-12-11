@@ -1,17 +1,5 @@
 const API_BASE_URL = "https://api.spotify.com/v1";
 
-/*
-import { login } from "./auth";
-
-function logoutAndRedirect() {
-    console.log("로그아웃 처리 중...");
-    localStorage.removeItem("spotify_token");
-    alert("세션이 만료되었습니다. 다시 로그인해주세요.");
-    login();
-    //window.location.href = "/.html"; // 로그인 페이지로 리다이렉트
-}
-*/
-
 //공통 api 호출 함수
 export async function fetchSpotifyData(endpoint, accessToken){
     try{
