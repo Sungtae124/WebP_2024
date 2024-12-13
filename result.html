@@ -65,16 +65,19 @@
             <button class="pip-prev-button">⏮️</button>
             <button class="pip-play-button">⏸️</button>
             <button class="pip-next-button">⏭️</button>
+            <button class="escape-pip-button">⏫️</button>
             <audio id="audio-player" style="display: none;"></audio>
         </div>
     </div>
     
     <script type="module" src="js/result.js"></script>
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    
     <script>
         window.onSpotifyWebPlaybackSDKReady = () => {
             console.log("Spotify Web Playback SDK 로드 완료");
         };
     </script>
+
 </body>
 </html>

@@ -320,7 +320,7 @@ h1 {
 #pip .control-buttons {
     flex: 1;
     display: flex;
-    gap: 10px;
+    gap: 5px;
     align-items: center;
 }
 
