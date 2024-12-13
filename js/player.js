@@ -1,8 +1,231 @@
+let spotifyPlayerInstance = null; // 싱글톤으로 관리되는 Spotify Player 인스턴스
+let deviceId = null; // Device ID 저장
+let isPlayerReady = false; // 초기화 상태 추적
+
+// Spotify Web Playback SDK 초기화 및 관리
+export async function getPlayerInstance(accessToken, trackID = null, callbacks = {}) {
+    if (spotifyPlayerInstance) {
+        console.log("기존 Spotify Player를 재사용합니다.");
+        if (trackID && deviceId) {
+            await playTrack(deviceId, accessToken, trackID);
+        }
+        return spotifyPlayerInstance;
+    }
+
+    return initializeSpotifyWebPlaybackSDK(accessToken, trackID, callbacks);
+}
+
+export async function initializeSpotifyWebPlaybackSDK(accessToken, trackID, callbacks) {
+    if (!accessToken) {
+        throw new Error("Access Token이 필요합니다.");
+    }
+
+    return new Promise((resolve, reject) => {
+        if (spotifyPlayerInstance) {
+            console.log("Spotify Player가 이미 초기화되었습니다.");
+            resolve(spotifyPlayerInstance);
+            return;
+        }
+
+        if (!window.Spotify) {
+            reject(new Error("Spotify SDK가 로드되지 않았습니다."));
+            return;
+        }
+
+        spotifyPlayerInstance = new Spotify.Player({
+            name: "Web Playback SDK",
+            getOAuthToken: (cb) => cb(accessToken),
+            volume: 0.3,
+        });
+
+        spotifyPlayerInstance.addListener("ready", ({ device_id }) => {
+            deviceId = device_id;
+            isPlayerReady = true;
+            console.log("Spotify Player 준비 완료. Device ID:", deviceId);
+            if (callbacks.onPlayerReady) callbacks.onPlayerReady(deviceId);
+            resolve(spotifyPlayerInstance);
+        });
+
+        spotifyPlayerInstance.addListener("player_state_changed", (state) => {
+            if (state && callbacks.onPlayerStateChange) {
+                callbacks.onPlayerStateChange(state);
+            }
+        });
+
+        spotifyPlayerInstance.addListener("initialization_error", ({ message }) => {
+            console.error("초기화 오류:", message);
+            reject(new Error(`초기화 오류: ${message}`));
+        });
+
+        spotifyPlayerInstance.addListener("authentication_error", ({ message }) => {
+            console.error("인증 오류:", message);
+            reject(new Error(`인증 오류: ${message}`));
+        });
+
+        spotifyPlayerInstance.connect();
+    });
+}
+
+// 위치 탐색
+export async function seekPosition(positionMs) {
+    if (!spotifyPlayerInstance) {
+        console.error("Spotify Player가 초기화되지 않았습니다.");
+        return;
+    }
+
+    try {
+        await spotifyPlayerInstance.seek(positionMs);
+        console.log(`위치로 이동: ${positionMs}ms`);
+    } catch (error) {
+        console.error("탐색 중 오류 발생:", error);
+    }
+}
+
+// 특정 트랙을 재생하는 함수
+export async function playTrack(deviceId, accessToken, trackID) {
+    if (!deviceId || !accessToken || !trackID) {
+        console.error("playTrack: 필요한 파라미터가 누락되었습니다.");
+        return;
+    }
+
+    try {
+        const url = `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`;
+        const body = JSON.stringify({
+            uris: [`spotify:track:${trackID}`], // 트랙 URI 배열
+        });
+
+        const response = await fetch(url, {
+            method: "PUT",
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+            },
+            body,
+        });
+
+        if (response.ok) {
+            console.log(`트랙 재생 성공: ${trackID}`);
+        } else {
+            const errorText = await response.text();
+            console.error(`트랙 재생 실패: ${errorText}`);
+        }
+    } catch (error) {
+        console.error("playTrack: 트랙 재생 중 오류 발생:", error);
+    }
+}
+
+
+// Device ID 가져오기
+export async function getDeviceId() {
+    if (!spotifyPlayerInstance) {
+        console.error("Spotify Player가 초기화되지 않았습니다.");
+        await waitForSpotifyPlayerInitialization();
+    }
+
+    return deviceId;
+}
+
+// Spotify SDK 로드 대기
+export async function waitForSpotifySDK() {
+    return new Promise((resolve, reject) => {
+        if (window.Spotify) {
+            resolve();
+        } else {
+            const checkInterval = setInterval(() => {
+                if (window.Spotify) {
+                    clearInterval(checkInterval);
+                    resolve();
+                }
+            }, 100);
+
+            setTimeout(() => {
+                clearInterval(checkInterval);
+                reject(new Error("Spotify SDK 로드 시간 초과"));
+            }, 5000);
+        }
+    });
+}
+
+// Spotify Player 초기화 대기
+export async function waitForSpotifyPlayerInitialization(timeout = 5000) {
+    const startTime = Date.now();
+    while (!spotifyPlayerInstance) {
+        if (Date.now() - startTime > timeout) {
+            throw new Error("Spotify Player 초기화 시간 초과");
+        }
+        await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    return spotifyPlayerInstance;
+}
+
+// Player 상태 저장
+export async function savePlayerState() {
+    if (!spotifyPlayerInstance) {
+        console.warn("Spotify Player가 초기화되지 않았습니다.");
+        return null;
+    }
+
+    try {
+        const state = await spotifyPlayerInstance.getCurrentState();
+        if (!state) {
+            console.error("플레이어 상태를 가져올 수 없습니다.");
+            return null;
+        }
+
+        const { position, track_window } = state;
+        const currentTrack = track_window?.current_track;
+
+        const savedState = {
+            trackID: currentTrack?.id || null,
+            position: position || 0,
+            trackName: currentTrack?.name || "Unknown",
+            artistName: currentTrack?.artists?.map((a) => a.name).join(", ") || "Unknown Artist",
+            albumImage: currentTrack?.album?.images[0]?.url || "/default/default-album.png",
+        };
+
+        console.log("저장된 상태:", savedState);
+        return savedState;
+    } catch (error) {
+        console.error("상태 저장 중 오류 발생:", error);
+        return null;
+    }
+}
+
+// Player 제거
+export function destroyPlayer() {
+    if (spotifyPlayerInstance) {
+        spotifyPlayerInstance.disconnect();
+        console.log("Spotify Player 연결 해제 완료");
+        spotifyPlayerInstance = null;
+        deviceId = null;
+        isPlayerReady = false;
+    }
+}
+
+// Player UI 업데이트
+export function updatePlaybackUI(state) {
+    const { position, duration, paused } = state;
+    const progressBar = document.querySelector(".progress-bar");
+    const playButton = document.querySelector(".pip-play-button");
+
+    if (progressBar) {
+        progressBar.value = duration ? (position / duration) * 100 : 0;
+    }
+
+    if (playButton) {
+        playButton.textContent = paused ? "▶️" : "⏸️";
+    }
+}
+
+
+/*
 // 전역 변수 정의
 let spotifyPlayer = null;
 
 // Spotify Web Playback SDK 초기화
 export async function initializeSpotifyWebPlaybackSDK(accessToken, trackID = null, callbacks = {}) {
+    waitForSpotifySDK();
+    
     if (!accessToken) {
         throw new Error("Access Token이 필요합니다.");
     }
@@ -112,154 +335,8 @@ export async function playTrack(deviceId, accessToken, trackID) {
     }
 }
 
-// 위치 탐색
-export async function seekPosition(positionMs) {
-    if (!spotifyPlayer) {
-        console.error("Spotify Player가 초기화되지 않았습니다.");
-        return;
-    }
 
-    try {
-        await spotifyPlayer.seek(positionMs);
-        console.log(`위치로 이동: ${positionMs}ms`);
-    } catch (error) {
-        console.error("탐색 중 오류 발생:", error);
-    }
-}
-
-export async function getDeviceId() {
-    if (!spotifyPlayer) {
-        console.error("Spotify Player가 초기화되지 않았습니다.");
-        await waitForSpotifyPlayerInitialization();
-    }
-
-    const state = await spotifyPlayer.getCurrentState();
-    if (state) {
-        return state.device_id;
-    } else {
-        console.error("Device ID를 가져올 수 없습니다.");
-        await waitForSpotifyPlayerInitialization();
-        const updatedState = await spotifyPlayer.getCurrentState();
-        return updatedState?.deviceId || null;
-    }
-}
-
-async function waitForSpotifySDK() {
-    return new Promise((resolve, reject) => {
-        const checkSDK = setInterval(() => {
-            if (window.Spotify) {
-                clearInterval(checkSDK);
-                resolve();
-            }
-        }, 100);
-
-        setTimeout(() => {
-            clearInterval(checkSDK);
-            reject(new Error("Spotify SDK 로드 시간 초과"));
-        }, 5000); // 최대 5초 대기
-    });
-}
-
-export async function waitForSpotifyPlayerInitialization(timeout = 5000) {
-    const startTime = Date.now();
-    while (!spotifyPlayer) {
-        if (Date.now() - startTime > timeout) {
-            throw new Error("Spotify Player 초기화 시간 초과");
-        }
-        await new Promise(resolve => setTimeout(resolve, 100));
-    }
-    return spotifyPlayer;
-}
-
-async function retryInitializePlayer(accessToken, trackID, callbacks, retryCount = 3) {
-    while (retryCount > 0) {
-        try {
-            await waitForSpotifySDK();
-            const player = await initializeSpotifyWebPlaybackSDK(accessToken, trackID, callbacks);
-            if (player) {
-                console.log("Spotify Player 초기화 성공");
-                return player;
-            }
-        } catch (error) {
-            console.error(`Spotify Player 초기화 실패. 남은 재시도 횟수: ${retryCount - 1}`, error);
-        }
-        retryCount--;
-        await new Promise(resolve => setTimeout(resolve, 1000)); // 1초 대기 후 재시도
-    }
-    throw new Error("Spotify Player 초기화 실패");
-}
-
-// 현재 상태 저장
-export async function savePlayerState() {
-    if (!spotifyPlayer) {
-        console.warn("Spotify Player가 초기화되지 않았습니다. 초기화를 다시 시도합니다.");
-        try {
-            spotifyPlayer = await retryInitializePlayer(
-                localStorage.getItem("spotify_token")
-            );
-        } catch (error) {
-            console.error("Spotify Player 재초기화 실패:", error);
-            return null;
-        }
-    }
-
-    try {
-        const state = await spotifyPlayer.getCurrentState();
-        if (!state) {
-            console.error("플레이어 상태를 가져올 수 없습니다.");
-            return {
-                trackID: currentTrack?.id || null,
-                position: position || 0,
-                trackName: currentTrack?.name || "Unknown",
-                artistName: currentTrack?.artists?.map(a => a.name).join(", ") || "Unknown Artist",
-                albumImage: currentTrack?.album?.images[0]?.url || "/default/default-album.png",
-            };
-        }
-
-        const { position, track_window } = state;
-        const currentTrack = track_window?.current_track;
-
-        const savedState = {
-            trackID: currentTrack?.id || null,
-            position: position || 0,
-            trackName: currentTrack?.name || "Unknown",
-            artistName: currentTrack?.artists?.map(a => a.name).join(", ") || "Unknown Artist",
-            albumImage: currentTrack?.album?.images[0]?.url || "/default/default-album.png",
-        };
-
-        console.log("저장된 상태:", savedState);
-        return savedState;
-    } catch (error) {
-        console.error("상태 저장 중 오류 발생:", error);
-        return null;
-    }
-}
-
-// 플레이어 제거
-export function destroyPlayer() {
-    if (spotifyPlayer) {
-        spotifyPlayer.disconnect();
-        console.log("Spotify Player 연결 해제 완료");
-        spotifyPlayer = null;
-    }
-}
-
-// 상태 업데이트 UI (커스터마이징 가능)
-export function updatePlaybackUI(state) {
-    console.log("호출 비활성화");
-    // const { position, duration, paused } = state;
-    // const progressBar = document.querySelector(".progress-bar");
-    // const playButton = document.querySelector(".pip-play-button");
-
-    // if (progressBar) {
-    //     progressBar.value = duration ? (position / duration) * 100 : 0;
-    // }
-
-    // if (playButton) {
-    //     playButton.textContent = paused ? "▶️" : "⏸️";
-    // }
-}
-
+*/
 
 
 /*

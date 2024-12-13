@@ -88,8 +88,9 @@ function goToDetail(trackID) {
         console.error("Detail 페이지로 이동할 수 없습니다. 트랙 ID가 누락되었습니다.");
         return;
     }
-    const detailURL = `detail.html?trackID=${encodeURIComponent(trackID)}&returnPage=${encodeURIComponent(result.html)}`;
-    window.location.href = detailURL; // 트랙 ID를 포함해 Detail 페이지로 이동
+    const currentPage = `/result.html`;
+    const detailURL = `detail.html?trackID=${encodeURIComponent(trackID)}&returnPage=${encodeURIComponent(currentPage)}`;
+    window.location.href = detailURL; // 트랙 ID, return page를 포함해 Detail 페이지로 이동
 }
 
 // 음악 재생 및 PiP 초기화
@@ -105,9 +106,10 @@ async function playMusic(music, isReturned, lastPosition) {
     if (!isReturned) {
         const state = await savePiPState(music.trackID, lastPosition);
         console.log("저장된 PiP 상태:", state);
+        goToDetail(music.trackID);
         //console.log("상태 저장 비활성");
     }
-    goToDetail(music.trackID);
+    //goToDetail(music.trackID);
     
     await initializePiP(getAccessToken(), music, lastPosition);
     updatePiP(music);

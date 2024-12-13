@@ -1,3 +1,186 @@
+import {
+    getPlayerInstance, 
+    playTrack, 
+    seekPosition, 
+    savePlayerState, 
+    destroyPlayer, 
+    updatePlaybackUI, 
+    waitForSpotifyPlayerInitialization 
+} from "./player.js";
+
+let pipSpotifyPlayer = null;
+let pipDeviceId = null; // Device ID 저장
+
+// PiP 초기화 함수
+export async function initializePiP(accessToken, defaultMusic, lastPosition) {
+    const pip = document.getElementById("pip");
+
+    if (!pip) {
+        console.error("PiP 요소를 찾을 수 없습니다.");
+        return;
+    }
+
+    try {
+        // Spotify Web Playback SDK 초기화
+        pipSpotifyPlayer = await getPlayerInstance(accessToken, defaultMusic.trackID, {
+            onPlayerReady: (deviceId) => {
+                console.log("PiP 플레이어 준비 완료. Device ID:", deviceId);
+                pipDeviceId = deviceId; // Device ID 저장
+                if (lastPosition) {
+                    seekPosition(lastPosition).catch(err =>
+                        console.error("위치 탐색 중 오류 발생:", err)
+                    );
+                }
+            },
+            onPlayerStateChange: (state) => {
+                if (state) updatePlaybackUI(state); // 상태 변경 시 UI 업데이트
+            },
+        });
+
+        if (!pipDeviceId) {
+            pipDeviceId = await getDeviceId();
+        }
+
+        if (!pipSpotifyPlayer) {
+            await waitForSpotifyPlayerInitialization();
+        }
+
+        if (defaultMusic.trackID && pipDeviceId) {
+            updatePiP(defaultMusic);
+        }
+
+        setupControlButtons();
+    } catch (error) {
+        console.error("PiP 초기화 중 오류 발생:", error);
+    }
+}
+
+// PiP UI 정보 업데이트
+export function updatePiP(music) {
+    if (!music || !music.trackID || !music.trackName || !music.artistName || !music.albumImage) {
+        console.error("updatePiP: 불완전한 음악 정보:", music);
+        return;
+    }
+
+    const pipImage = document.querySelector("#pip .album-cover");
+    const pipTitle = document.querySelector("#pip .music-info p");
+
+    if (pipImage) {
+        pipImage.src = music.albumImage || "/default/default-album.png";
+        pipImage.alt = `${music.trackName} - ${music.artistName}`;
+    }
+
+    if (pipTitle) {
+        pipTitle.textContent = `${music.trackName} - ${music.artistName}`;
+    }
+
+    if (pipSpotifyPlayer && pipDeviceId) {
+        playTrack(pipDeviceId, localStorage.getItem("spotify_token"), music.trackID)
+            .catch(err => console.error("곡 재생 중 오류 발생:", err));
+    } else {
+        console.error("Spotify Player 또는 Device ID가 초기화되지 않았습니다.");
+    }
+}
+
+// PiP UI 제어
+export function showPiP() {
+    const pip = document.getElementById("pip");
+    if (pip) {
+        pip.style.display = "flex";
+        pip.style.opacity = "1";
+    }
+}
+
+export function hidePiP() {
+    const pip = document.getElementById("pip");
+    if (pip) {
+        pip.style.display = "none";
+        pip.style.opacity = "0";
+    }
+}
+
+// PiP 상태 저장
+export async function savePiPState(trackID, position) {
+    try {
+        if (!trackID) {
+            console.warn("trackID가 제공되지 않았습니다. 상태를 저장할 수 없습니다.");
+            return null;
+        }
+
+        const savedState = {
+            trackID,
+            position,
+        };
+
+        console.log("저장된 PiP 상태:", savedState);
+        return savedState;
+    } catch (error) {
+        console.error("PiP 상태 저장 중 오류 발생:", error);
+        return null;
+    }
+}
+
+// PiP 이벤트 설정
+export function setupControlButtons() {
+    const playButton = document.querySelector(".pip-play-button");
+    const progressBar = document.querySelector(".progress-bar");
+
+    if (!playButton || !progressBar) {
+        console.error("플레이어 제어 버튼 또는 진행 바를 찾을 수 없습니다.");
+        return;
+    }
+
+    // 재생 버튼 이벤트
+    playButton.addEventListener("click", async () => {
+        try {
+            const state = await pipSpotifyPlayer.getCurrentState();
+            if (!state) {
+                console.error("플레이어 상태를 가져올 수 없습니다.");
+                return;
+            }
+
+            if (state.paused) {
+                await pipSpotifyPlayer.resume();
+                console.log("재생 시작");
+                playButton.textContent = "⏸️";
+            } else {
+                await pipSpotifyPlayer.pause();
+                console.log("일시정지");
+                playButton.textContent = "▶️";
+            }
+        } catch (error) {
+            console.error("재생 상태 토글 중 오류 발생:", error);
+        }
+    });
+
+    // 슬라이더 이벤트
+    progressBar.addEventListener("input", async () => {
+        try {
+            const state = await pipSpotifyPlayer.getCurrentState();
+            if (state) {
+                const { duration } = state;
+                const seekPositionValue = Math.floor((progressBar.value / 100) * duration);
+
+                if (!isNaN(seekPositionValue)) {
+                    await seekPosition(seekPositionValue);
+                    console.log(`슬라이더로 탐색: ${seekPositionValue}ms`);
+                } else {
+                    console.error("유효하지 않은 탐색 위치");
+                }
+            } else {
+                console.error("플레이어 상태를 가져올 수 없습니다.");
+            }
+        } catch (error) {
+            console.error("슬라이더 탐색 중 오류 발생:", error);
+        }
+    });
+
+    console.log("PiP 제어 버튼 설정 완료");
+}
+
+
+
+/*
 import { getDeviceId, initializeSpotifyWebPlaybackSDK, playTrack, seekPosition, savePlayerState, destroyPlayer, updatePlaybackUI, waitForSpotifyPlayerInitialization } from "./player.js";
 
 let pipSpotifyPlayer = null;
@@ -228,7 +411,7 @@ export function setupControlButtons() {
 
     console.log("PiP 제어 버튼 설정 완료");
 }
-
+*/
 
 
 /*
