@@ -237,6 +237,28 @@ document.addEventListener("DOMContentLoaded", async () => {
                     `;
                 }
                 break;
+                case "rec": //추천 버튼, 추가 작업 필요
+                
+                break;
+
+            case "next": //다음 트랙 버튼, 추가 작업 필요
+                newPanel.innerHTML = `<h2>다음 트랙 패널</h2><p>다음 트랙 로딩 실패</p>`;
+                break;
+
+            case "art": //아티스트 버튼
+                const artistId = button.dataset.artistId;
+                if (artistId) {
+                    const artistData = await fetchArtistDetails(artistId, accessToken);
+                    newPanel.innerHTML = `
+                        <h2>Artist</h2>
+                        <p>${artistData.name}</p>
+                        <p>${artistData.followers.total} followers</p>
+                        <img src="${artistData.images[0]?.url}" style="width: 100%; max-height: 200px;">
+                    `;
+                } else {
+                    newPanel.innerHTML = `<h2>아티스트 패널</h2><p>아티스트 로딩 실패</p>`;
+                }
+                break;
 
             case "pip":
                 returnToPreviousPage();
