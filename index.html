@@ -10,7 +10,16 @@
     <!-- 검색창 -->
     <header>
         <h1>Playmingo</h1>
-        <input type="text" id="search-bar" placeholder="음악 검색..." autocomplete="off" />
+        <input type="text" id="search-bar" placeholder="검색어를 입력하세요" autocomplete="off" />
+        <button id="search-button">검색</button>
+        <button id="login-button">로그인</button>
+        
+        <script type="module">
+            import { login } from './js/auth.js';
+    
+            // 버튼 클릭 시 login 함수 호출
+            document.getElementById("login-button").addEventListener("click", login);
+        </script>
         <!-- 추천 검색어 표시 영역 -->
         <div id="suggestions"></div>
     </header>
@@ -23,23 +32,12 @@
         <section id="genre-buttons" class="result-grid">
             <!-- JavaScript가 동적으로 추가 -->
         </section>
-
-        <aside id="pip">
-            <img src="/default/default-album.png" alt="앨범 자켓" class="album-cover">
-            <div class="music-info">
-                <p> Title - singer</p>
-                <progress value="30" max="100"></progress>
-            </div>
-            <button id="expand-button">확대</button>
-        </aside>
     </main>
 
     <!-- 로그인 팝업 -->
     <div id="login-popup" class="popup hidden">
         <div class="popup-content">
             <p id="login-message">음악을 재생하려면 로그인하세요.</p>
-            <!-- <input type="text" id="username" placeholder="사용자 이름" /> -->
-            <!-- <input type="password" id="password" placeholder="비밀번호" /> -->
             <div>
                 <button id="login-button">로그인</button>
                 <button id="cancel-button">취소</button>
@@ -53,10 +51,32 @@
             </div>
         </div>
     </div>
+
+    <div id="pip">
+        <img src="/default/default-album.png" alt="Album Cover" class="album-cover">
+        <div class="music-info">
+            <p>곡 제목 - 아티스트 이름</p>
+            <input type="range" class="progress-bar" min="0" max="100" value="0">
+        </div>
+        <div class="control-buttons">
+            <button class="pip-prev-button">⏮️</button>
+            <button class="pip-play-button">⏸️</button>
+            <button class="pip-next-button">⏭️</button>
+            <button class="escape-pip-button">⏫️</button>
+            <audio id="audio-player" style="display: none;"></audio>
+        </div>
+    </div>
     
     <script type="module" src="js/search.js"></script>
     <script type="module" src="js/main.js"></script>
     <script type="module" src="js/main_api.js"></script>
     <script type="module" src="js/genre.js"></script>
+    
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    <script>
+        window.onSpotifyWebPlaybackSDKReady = () => {
+            console.log("Spotify Web Playback SDK 로드 완료");
+        };
+    </script>
 </body>
 </html>

@@ -1,9 +1,10 @@
 import { getAccessTokenWithoutLogin, fetchSpotifySearchResults } from "./main_api.js";
-import { updatePiP, showPiP, hidePiP } from "./main_pip.js";
+import { initializePiP, updatePiP, showPiP, hidePiP, savePiPState } from "./pip.js";
 import { renderGenreButtons } from "./genre.js";
 import { setupLoginPopup, showLoginPopup } from "./main_login.js";
 import { setupSearchBar } from "./search.js";
 import { getAccessToken } from "./api.js";
+import { waitForSpotifySDK } from "./player.js";
 
 // Music 클래스 정의
 class Music {
@@ -34,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", (e) => {
         const target = e.target.closest(".large-box, .medium-box");
         if (target) {
-            const isLoggedIn = true; // 임시 설정
+            const isLoggedIn = getAccessToken(); // 임시 설정
             if (!isLoggedIn) {
                 e.preventDefault();
                 showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
@@ -50,12 +51,13 @@ function goToDetail(trackID) {
         console.error("Detail 페이지로 이동할 수 없습니다. 트랙 ID가 누락되었습니다.");
         return;
     }
-    const detailURL = `detail.html?trackID=${encodeURIComponent(trackID)}`;
-    window.location.href = detailURL; // 트랙 ID를 포함해 Detail 페이지로 이동
+    const currentPage = `/index.html`;
+    const detailURL = `detail.html?trackID=${encodeURIComponent(trackID)}&returnPage=${encodeURIComponent(currentPage)}`;
+    window.location.href = detailURL; // 트랙 ID, return page를 포함해 Detail 페이지로 이동
 }
 
 // 음원 박스 클릭 시 PiP 업데이트 및 표시
-function playMusic(music) {
+async function playMusic(music, isReturned, lastPosition) {
     const isLoggedIn = getAccessToken();
     if (!isLoggedIn) {
         showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
@@ -66,9 +68,18 @@ function playMusic(music) {
         return;
     }
     console.log("Playing:",music.trackName, "-ID:", music.trackID);
-    goToDetail(music.trackID); // Detail page로 이동
-    updatePiP(music); // PiP 업데이트
+    console.log("전달된 lastPosition:", lastPosition);
+
+    if (!isReturned) {
+        const state = await savePiPState(music.trackID, lastPosition);
+        console.log("저장된 PiP 상태:", state);
+        goToDetail(music.trackID); // Detail page로 이동
+    }
+    
+    await initializePiP(getAccessToken(), music, lastPosition);
+    //updatePiP(music); // PiP 업데이트는 초기화 시 자동 진행
     showPiP(); // PiP 표시
+    console.log("last position: ", lastPosition);
 }
 
 // 추천 목록 박스 렌더링
@@ -106,8 +117,7 @@ function renderMusicBoxes(tracks, albums, artists) {
             </div>
         `;
         mediumBox.addEventListener("click", () => {
-            playMusic(new Music(track.album.images[0]?.url, track.album.name, track.name, track.id, track.artists[0]?.name));
-            //playMusic(music);
+            playMusic(new Music(track.album.images[0]?.url, track.album.name, track.name, track.id, track.artists[0]?.name),false, 0);
         });
         grid.appendChild(mediumBox);
     });
@@ -132,10 +142,25 @@ function renderMusicBoxes(tracks, albums, artists) {
 
 // 초기 검색 및 데이터 렌더링
 document.addEventListener("DOMContentLoaded", async () => {
-    hidePiP();
+    //await waitForSpotifySDK();
 
     // URL에서 장르 매개변수 읽기
     const urlParams = new URLSearchParams(window.location.search);
+
+    const fromDetail = urlParams.get("fromDetail") || "true";
+    const lastPosition = urlParams.get("lastPosition") || 0;
+    const trackID = urlParams.get("trackID");
+    const albumImage = decodeURIComponent(urlParams.get("albumImage"));
+    const trackName = decodeURIComponent(urlParams.get("trackName"));
+    const artistName = decodeURIComponent(urlParams.get("artistName"));
+
+    if (trackID) {
+        const music = { albumImage, trackName, trackID, artistName };
+        if(fromDetail)  playMusic(music, true, lastPosition);
+        else    playMusic(music, false, 0);
+    }
+    hidePiP();
+
     const genre = urlParams.get("genre") || "한국 인디 밴드"; // 기본 검색어
 
     const token = await getAccessTokenWithoutLogin();

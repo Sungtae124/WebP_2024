@@ -9,8 +9,16 @@
 <body>
     <header>
         <h1>Playmingo</h1>
-        <input type="text" id="search-bar" placeholder="검색어를 입력하세요..." autocomplete="off">
+        <input type="text" id="search-bar" placeholder="검색어를 입력하세요" autocomplete="off">
         <button id="search-button">검색</button>
+        <button id="login-button">로그인</button>
+        
+        <script type="module">
+            import { login } from './js/auth.js';
+    
+            // 버튼 클릭 시 login 함수 호출
+            document.getElementById("login-button").addEventListener("click", login);
+        </script>
         <!-- 추천 검색어 표시 영역 -->
         <div id="suggestions"></div>
     </header>
@@ -30,17 +38,39 @@
             <div>
                 <button id="login-button">로그인</button>
                 <button id="cancel-button">취소</button>
+                <script type="module">
+                    import { login } from './js/auth.js';
+    
+                    // 버튼 클릭 시 login 함수 호출
+                    document.getElementById("login-button").addEventListener("click", login);
+                    </script>
             </div>
         </div>
     </div>
 
-    <aside id="pip">
-        <img src="/default/default-album.png" alt="앨범 커버" class="album-cover">
+    <div id="pip">
+        <img src="/default/default-album.png" alt="Album Cover" class="album-cover">
         <div class="music-info">
-            <p>곡 제목 - 가수</p>
+            <p>곡 제목 - 아티스트 이름</p>
+            <input type="range" class="progress-bar" min="0" max="100" value="0">
         </div>
-    </aside>
+        <div class="control-buttons">
+            <button class="pip-prev-button">⏮️</button>
+            <button class="pip-play-button">⏸️</button>
+            <button class="pip-next-button">⏭️</button>
+            <button class="escape-pip-button">⏫️</button>
+            <audio id="audio-player" style="display: none;"></audio>
+        </div>
+    </div>
     
     <script type="module" src="js/result.js"></script>
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    
+    <script>
+        window.onSpotifyWebPlaybackSDKReady = () => {
+            console.log("Spotify Web Playback SDK 로드 완료");
+        };
+    </script>
+
 </body>
 </html>
