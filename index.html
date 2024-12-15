@@ -54,16 +54,19 @@
 
     <div id="pip">
         <img src="/default/default-album.png" alt="Album Cover" class="album-cover">
-        <div class="music-info">
-            <p>곡 제목 - 아티스트 이름</p>
+        <div class="info-and-controls">
+            <div class="music-info">
+                <p class="track-name">Track Name</p>
+                <!-- <p class="artist-name">Artist Name</p> -->
+            </div>
             <input type="range" class="progress-bar" min="0" max="100" value="0">
-        </div>
-        <div class="control-buttons">
-            <button class="pip-prev-button">⏮️</button>
-            <button class="pip-play-button">⏸️</button>
-            <button class="pip-next-button">⏭️</button>
-            <button class="escape-pip-button">⏫️</button>
-            <audio id="audio-player" style="display: none;"></audio>
+            <div class="control-buttons">
+                <button class="pip-prev-button">⏮️</button>
+                <button class="pip-play-button">⏸️</button>
+                <button class="pip-next-button">⏭️</button>
+                <button class="escape-pip-button">⏫️</button>
+                <audio id="audio-player" style="display: none;"></audio>
+            </div>
         </div>
     </div>
     

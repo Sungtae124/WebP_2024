@@ -272,17 +272,17 @@ h1 {
     box-shadow: 0rem 2rem 4rem rgba(0, 0, 0, 0.3); /* 우측과 하단 그림자 강조 */
 }
 
-
 /* PiP 스타일 */
 #pip {
     display: none; /* 초기에는 숨김 */
     position: fixed;
-    width: clamp(200px, 20vw, 400px); /* 최소 200px, 최대 400px */
+    width: clamp(280px, 20vw, 400px); /* 최소 200px, 최대 400px */
     bottom: 20px; /* 화면 하단에서 20px */
     right: 20px; /* 화면 우측에서 20px */
     background-color: var(--dark-bg);
     color: var(--highlight);
     padding: 15px;
+    display: flex;
     flex-direction: row; /* 이미지와 텍스트를 가로로 배치 */
     align-items: center;
     border-radius: 10px;
@@ -290,38 +290,64 @@ h1 {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 1000;
     transition: opacity 0.3s ease, transform 0.3s ease;
+    gap: 10px; /* 이미지와 오른쪽 영역 간격 */
+    object-fit: contain;
 }
 
 /* PiP의 앨범 커버 */
 #pip .album-cover {
-    width: 20%;
-    /* height: 60px; */
+    flex-shrink: 0; /* 이미지 크기 고정 */
+    width: 60px;
+    height: 60px;
     border-radius: 5px;
-    margin-right: 15px;
     object-fit: cover;
+    margin-right: 5%;
 }
 
-/* PiP의 텍스트 */
+/* PiP의 오른쪽 영역 */
+#pip .info-and-controls {
+    display: flex;
+    /* object-fit:cover; */
+    flex-direction: column;
+    flex: 1; /* 나머지 공간을 채움 */
+    gap: 5px;
+}
+
+/* PiP의 텍스트 영역 */
 #pip .music-info {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    
+    gap: 3px;
 }
 
 #pip .music-info p {
-    font-size: clamp(0.8rem, 1vw, 1.0rem);
+    font-size: clamp(0.9rem, 1vw, 1.0rem);
     line-height: 1.4;
     color: var(--highlight);
     margin: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    justify-content: center;
+    white-space: nowrap; /* 텍스트가 길면 말줄임 표시 */
+}
+
+/* PiP의 재생 슬라이더 */
+#pip .progress-bar {
+    width: 90%;
+    height: 5px;
+    appearance: none;
+    background-color: var(--light-bg);
+    border-radius: 5px;
+    cursor: pointer;
+    justify-content: center;
 }
 
 /* PiP 컨트롤 버튼 */
 #pip .control-buttons {
-    flex: 1;
     display: flex;
+    justify-content:center;
     gap: 5px;
-    align-items: center;
 }
 
 #pip .control-buttons button {
@@ -339,15 +365,27 @@ h1 {
     background-color: var(--highlight);
 }
 
-/* PiP의 재생 슬라이더 */
-#pip .progress-bar {
-    width: 90%;
-    height: 5px;
-    margin-top: 5px;
-    appearance: none;
-    background-color: var(--light-bg);
-    border-radius: 5px;
-    cursor: pointer;
+/* 반응형 조정 */
+@media (max-width: 400px) {
+    #pip {
+        width: 90%; /* 작은 화면에서는 화면 너비에 맞춤 */
+        margin: 5%;
+        bottom: 10px;
+        flex-direction: column; /* 작은 화면에서는 세로 배치 */
+        align-items: center;
+        gap: 10px;
+    }
+
+    #pip .info-and-controls {
+        width: 90%; /* 너비를 부모 크기에 맞춤 */
+        align-items: center;
+    }
+
+    #pip .control-buttons {
+        justify-content: space-between; /* 버튼 간격 조정 */
+        width: 90%;
+        align-items: center;
+    }
 }
 
 /* PiP가 겹칠 때 투명도 변경 구현 예정*/
