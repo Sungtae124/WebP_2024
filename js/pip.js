@@ -58,7 +58,7 @@ export async function initializePiP(accessToken, defaultMusic, lastPosition) {
             updatePiP(defaultMusic);
         }
 
-        setupControlButtons(lastPosition);
+        setupControlButtons(0);
     } catch (error) {
         console.error("PiP 초기화 중 오류 발생:", error);
     }
@@ -215,12 +215,12 @@ export function setupControlButtons(lastPosition) {
                 console.log("재생 시작");
 
                 // `lastPosition`으로 이동
-                if (lastPosition && !isNaN(lastPosition)) {
-                    console.log("lastPosition으로 이동:", lastPosition);
-                    setTimeout(await seekPosition(lastPosition), 2000);
-                } else {
-                    console.warn("lastPosition 값이 유효하지 않습니다. 처음부터 재생합니다.");
-                }
+                // if (lastPosition && !isNaN(lastPosition)) {
+                //     console.log("lastPosition으로 이동:", lastPosition);
+                //     setTimeout(await seekPosition(lastPosition), 2000);
+                // } else {
+                //     console.warn("lastPosition 값이 유효하지 않습니다. 처음부터 재생합니다.");
+                // }
 
                 playButton.textContent = "⏸️";
             } else {
