@@ -73,14 +73,11 @@ async function playMusic(music, isReturned, lastPosition) {
     if (!isReturned) {
         const state = await savePiPState(music.trackID, lastPosition);
         console.log("저장된 PiP 상태:", state);
-        goToDetail(music.trackID);
-        //console.log("상태 저장 비활성");
+        goToDetail(music.trackID); // Detail page로 이동
     }
-
-    //goToDetail(music.trackID); // Detail page로 이동
     
     await initializePiP(getAccessToken(), music, lastPosition);
-    //updatePiP(music); // PiP 업데이트
+    //updatePiP(music); // PiP 업데이트는 초기화 시 자동 진행
     showPiP(); // PiP 표시
     console.log("last position: ", lastPosition);
 }
@@ -147,6 +144,7 @@ function renderMusicBoxes(tracks, albums, artists) {
 document.addEventListener("DOMContentLoaded", async () => {
     //await waitForSpotifySDK();
 
+    // URL에서 장르 매개변수 읽기
     const urlParams = new URLSearchParams(window.location.search);
 
     const fromDetail = urlParams.get("fromDetail") || "true";
@@ -163,8 +161,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     hidePiP();
 
-    // URL에서 장르 매개변수 읽기
-    //const urlParams = new URLSearchParams(window.location.search);
     const genre = urlParams.get("genre") || "한국 인디 밴드"; // 기본 검색어
 
     const token = await getAccessTokenWithoutLogin();

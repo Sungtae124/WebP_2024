@@ -47,32 +47,6 @@ export async function updatePlaybackUI(state) {
     );
 }
 
-
-// // 슬라이더 동작 및 위치 변경 처리
-// export async function handleSeek(event, spotifyPlayerInstance) {
-//     if (!spotifyPlayerInstance) {
-//         console.error("Spotify Player 인스턴스가 없습니다.");
-//         return;
-//     }
-
-//     try {
-//         const duration = await spotifyPlayerInstance.getDuration();
-//         const seekPosition = (event.target.value / 100) * duration; // 슬라이더 위치 계산
-
-//         await spotifyPlayerInstance.seek(seekPosition);
-//         console.log(`재생 위치 변경: ${seekPosition}ms`);
-//     } catch (error) {
-//         console.error("위치 변경 중 오류 발생:", error);
-//     }
-// }
-
-// 재생 상태 UI 업데이트
-// export function updatePlaybackUI(state) {
-//     const { position, duration, paused } = state;
-//     progressBar.value = (position / duration) * 100; //슬라이더 위치
-//     playButton.textContent = paused ? '▶️' : '⏸️'; //버튼 텍스트 변경
-// }
-
 // 패널 UI 생성
 export function createPanel(content) {
     const panel = document.createElement("div");
