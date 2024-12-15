@@ -7,6 +7,7 @@ export async function getPlayerInstance(accessToken, trackID = null, callbacks =
     if (spotifyPlayerInstance) {
         console.log("기존 Spotify Player를 재사용합니다.");
         if (trackID && deviceId) {
+            const state = await spotifyPlayerInstance.getCurrentState();
             await playTrack(deviceId, accessToken, trackID, state.position);
         }
         return spotifyPlayerInstance;

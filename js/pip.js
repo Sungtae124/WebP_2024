@@ -30,7 +30,7 @@ export async function initializePiP(accessToken, defaultMusic, lastPosition) {
             onPlayerReady: async (deviceId) => {
                 console.log("PiP 플레이어 준비 완료. Device ID:", deviceId);
                 pipDeviceId = deviceId; // Device ID 저장
-                
+
                 // 곡 재생
                 try{
                     console.log("재생 시도");
@@ -129,13 +129,68 @@ export async function savePiPState(trackID, position) {
     }
 }
 
+//TODO : PiP 정보를 저장하여 detail로 이동. lastPosition, fromReturnPage 등을 활용하여 detail에서 연속 재생.
+async function escapePiP() {
+    try{
+        if (!pipSpotifyPlayer) {
+            console.error("Spotify Player가 초기화되지 않았습니다.");
+            return;
+        }
+
+        const state = await pipSpotifyPlayer.getCurrentState();
+        console.log("current state", state);
+        if (!state) {
+            console.error("플레이어 상태를 가져올 수 없습니다.");
+            return;
+        }
+
+        // 세부 기능 구현 필요.
+        const { position, track_window } = state;
+        const currentTrack = track_window?.current_track;
+
+        if (!currentTrack) {
+            console.error("현재 재생 중인 트랙 정보를 가져올 수 없습니다.");
+            return;
+        }
+
+        const trackID = currentTrack.id;
+        const trackName = currentTrack.name;
+        const artistName = currentTrack.artists.map((a) => a.name).join(", ");
+        const albumImage = currentTrack.album.images[0]?.url || "/default/default-album.png";
+        const lastPosition = position || 0;
+
+        console.log("저장된 PiP 상태:", { trackID, trackName, artistName, albumImage, lastPosition });
+
+        // detail 페이지로 이동할 URL 생성
+        const params = new URLSearchParams({
+            fromReturnPage: "true",
+            trackID: encodeURIComponent(trackID),
+            lastPosition,
+            albumImage: encodeURIComponent(albumImage),
+            trackName: encodeURIComponent(trackName),
+            artistName: encodeURIComponent(artistName),
+        });
+
+        const returnUrl = `/detail.html?${params.toString()}`;
+        console.log("Redirecting to:", returnUrl);
+
+        // PiP 숨기기 및 페이지 이동
+        hidePiP();
+        await pipSpotifyPlayer.pause();
+        window.location.href = returnUrl;
+    } catch (err) {
+        console.error("escape pip 실행 중 오류 발생", err);
+    };
+}
+
 // PiP 이벤트 설정
 export function setupControlButtons(lastPosition) {
     const playButton = document.querySelector(".pip-play-button");
     const progressBar = document.querySelector(".progress-bar");
+    const escapePipButton = document.querySelector(".escape-pip-button");
 
-    if (!playButton || !progressBar) {
-        console.error("플레이어 제어 버튼 또는 진행 바를 찾을 수 없습니다.");
+    if (!playButton || !progressBar || !escapePipButton) {
+        console.error("플레이어 제어 버튼, 진행 바, 세부페이지 이동 버튼을 찾을 수 없습니다.");
         return;
     }
 
@@ -198,6 +253,15 @@ export function setupControlButtons(lastPosition) {
             }
         } catch (error) {
             console.error("슬라이더 탐색 중 오류 발생:", error);
+        }
+    });
+
+    //TODO : escapePiP() 활용하여 버튼 클릭 이벤트 처리
+    escapePipButton.addEventListener("click", async () => {
+        try{
+            await escapePiP();
+        } catch (err) {
+            console.log("세부 페이지 이동 실패", err);
         }
     });
 

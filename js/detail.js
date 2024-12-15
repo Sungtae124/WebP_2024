@@ -24,7 +24,7 @@ let trackID = null;
 let returnPage = null;
 
 // 재생 관련 초기화 함수
-async function initializePlayback() {
+async function initializePlayback(lastPosition) {
     try {
         if (!accessToken) {
             accessToken = getAccessToken();
@@ -39,7 +39,7 @@ async function initializePlayback() {
                 console.log("Spotify Player 준비 완료. Device ID:", id);
                 deviceId = id;
 
-                playTrack(deviceId, accessToken, trackID, 0 ).catch((err) =>
+                playTrack(deviceId, accessToken, trackID, lastPosition ).catch((err) =>
                     console.error("곡 재생 중 오류 발생:", err)
                 );
             },
@@ -86,6 +86,35 @@ document.addEventListener("DOMContentLoaded", async () => {
     const urlParams = new URLSearchParams(window.location.search);
     trackID = urlParams.get("trackID") || "5WYgNDkw0VsDIZwfwQWlXp";
     returnPage = urlParams.get("returnPage") || "/index.html";
+    const fromReturnPage = urlParams.get("fromReturnPage") || false;
+    const lastPosition = fromReturnPage ? urlParams.get("lastPosition") || 0 : 0;
+
+    if(fromReturnPage) {
+        const albumImage = decodeURIComponent(urlParams.get("albumImage") || "/default/default-album.png");
+        const trackName = decodeURIComponent(urlParams.get("trackName") || "Unknown Track");
+        const artistName = decodeURIComponent(urlParams.get("artistName") || "Unknown Artist");
+
+        console.log("Detail 페이지로 전달된 데이터:", {
+            trackID,
+            lastPosition,
+            albumImage,
+            trackName,
+            artistName,
+        });
+
+        if (!trackID) {
+            console.error("트랙 ID가 누락되었습니다.");
+            return;
+        }
+
+        try {
+            await initializePlayback(lastPosition);
+            // UI 업데이트
+            updateTrackDetailsUI({ trackName, artistName, albumImage });
+        } catch (error) {
+            console.error("Detail 페이지 초기화 중 오류 발생:", error);
+        }
+    }
 
     if (!trackID) {
         console.error("트랙 ID가 없습니다.");
@@ -103,7 +132,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             throw new Error("트랙 데이터를 가져오지 못했습니다.");
         }
 
-        await initializePlayback();
+        await initializePlayback(0);
         updateTrackDetailsUI(trackData);
     } catch (error) {
         console.error("트랙 데이터 로드 중 오류 발생:", error);
@@ -113,7 +142,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     playButton.addEventListener("click", async () => {
         if (!spotifyPlayer) {
             // Spotify Player가 초기화되지 않았을 경우 초기화 수행
-            await initializePlayback();
+            await initializePlayback(0);
         } else {
             // 재생 상태 토글
             try {
