@@ -4,6 +4,7 @@ import { renderGenreButtons } from "./genre.js";
 import { setupLoginPopup, showLoginPopup } from "./main_login.js";
 import { setupSearchBar } from "./search.js";
 import { getAccessToken } from "./api.js";
+import { waitForSpotifySDK } from "./player.js";
 
 // Music 클래스 정의
 class Music {
@@ -67,7 +68,8 @@ async function playMusic(music, isReturned, lastPosition) {
         return;
     }
     console.log("Playing:",music.trackName, "-ID:", music.trackID);
-    
+    console.log("전달된 lastPosition:", lastPosition);
+
     if (!isReturned) {
         const state = await savePiPState(music.trackID, lastPosition);
         console.log("저장된 PiP 상태:", state);
@@ -78,8 +80,9 @@ async function playMusic(music, isReturned, lastPosition) {
     //goToDetail(music.trackID); // Detail page로 이동
     
     await initializePiP(getAccessToken(), music, lastPosition);
-    updatePiP(music); // PiP 업데이트
+    //updatePiP(music); // PiP 업데이트
     showPiP(); // PiP 표시
+    console.log("last position: ", lastPosition);
 }
 
 // 추천 목록 박스 렌더링
@@ -142,10 +145,26 @@ function renderMusicBoxes(tracks, albums, artists) {
 
 // 초기 검색 및 데이터 렌더링
 document.addEventListener("DOMContentLoaded", async () => {
+    //await waitForSpotifySDK();
+
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const fromDetail = urlParams.get("fromDetail") || "true";
+    const lastPosition = urlParams.get("lastPosition") || 0;
+    const trackID = urlParams.get("trackID");
+    const albumImage = decodeURIComponent(urlParams.get("albumImage"));
+    const trackName = decodeURIComponent(urlParams.get("trackName"));
+    const artistName = decodeURIComponent(urlParams.get("artistName"));
+
+    if (trackID) {
+        const music = { albumImage, trackName, trackID, artistName };
+        if(fromDetail)  playMusic(music, true, lastPosition);
+        else    playMusic(music, false, 0);
+    }
     hidePiP();
 
     // URL에서 장르 매개변수 읽기
-    const urlParams = new URLSearchParams(window.location.search);
+    //const urlParams = new URLSearchParams(window.location.search);
     const genre = urlParams.get("genre") || "한국 인디 밴드"; // 기본 검색어
 
     const token = await getAccessTokenWithoutLogin();

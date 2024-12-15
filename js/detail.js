@@ -10,11 +10,11 @@ import {
 } from './detail_ui.js';
 import { fetchTrackDetails, fetchArtistDetails, fetchAlbumDetails, getAccessToken } from './api.js';
 import {
-    initializeSpotifyWebPlaybackSDK,
+    getPlayerInstance,
     playTrack,
     seekPosition,
     savePlayerState,
-    destroyPlayer,
+    
 } from './player.js';
 
 let spotifyPlayer = null; // Spotify Player 인스턴스
@@ -34,11 +34,12 @@ async function initializePlayback() {
         }
 
         // Spotify Web Playback SDK 초기화
-        spotifyPlayer = await initializeSpotifyWebPlaybackSDK(accessToken, trackID, {
-            onPlayerReady: (id) => {
+        spotifyPlayer = await getPlayerInstance(accessToken, trackID, {
+            onPlayerReady: async (id) => {
                 console.log("Spotify Player 준비 완료. Device ID:", id);
                 deviceId = id;
-                playTrack(deviceId, accessToken, trackID).catch((err) =>
+
+                playTrack(deviceId, accessToken, trackID, 0 ).catch((err) =>
                     console.error("곡 재생 중 오류 발생:", err)
                 );
             },
@@ -102,6 +103,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             throw new Error("트랙 데이터를 가져오지 못했습니다.");
         }
 
+        await initializePlayback();
         updateTrackDetailsUI(trackData);
     } catch (error) {
         console.error("트랙 데이터 로드 중 오류 발생:", error);
@@ -130,14 +132,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // 슬라이더 탐색 이벤트 설정
-    progressBar.addEventListener("input", async (event) => {
-        if (spotifyPlayer) {
-            const duration = await spotifyPlayer.getDuration();
-            const seekPositionMs = (event.target.value / 100) * duration;
-            await seekPosition(seekPositionMs).catch((err) =>
-                console.error("위치 탐색 중 오류 발생:", err)
-            );
-        }
+    // progressBar.addEventListener("input", async (event) => {
+    //     if (!spotifyPlayer) {
+    //         console.error("Spotify Player가 초기화되지 않았습니다.");
+    //         return;
+    //     }
+    //     await handleSeek(event, spotifyPlayer);
+    // });
+
+    // 슬라이더 탐색 이벤트 설정
+    // progressBar.addEventListener("input", async (event) => {
+    //     if (spotifyPlayer) {
+    //         const duration = await spotifyPlayer.getDuration();
+    //         const seekPositionMs = (event.target.value / 100) * duration;
+    //         await seekPosition(seekPositionMs).catch((err) =>
+    //             console.error("위치 탐색 중 오류 발생:", err)
+    //         );
+    //     }
+    // });
+
+    //슬라이더를 움직이면
+    progressBar.addEventListener("input", () => {
+        spotifyPlayer.getCurrentState().then(state => {
+            if (state) {
+                const { duration } = state;
+                const seekPosition = (progressBar.value / 100) * duration; //이동 위치
+                spotifyPlayer.seek(seekPosition); //해당 위치로 이동
+            }
+        });
     });
 
     // 버튼들에 패널 클릭 이벤트 할당

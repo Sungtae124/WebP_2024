@@ -7,12 +7,22 @@ export async function getPlayerInstance(accessToken, trackID = null, callbacks =
     if (spotifyPlayerInstance) {
         console.log("기존 Spotify Player를 재사용합니다.");
         if (trackID && deviceId) {
-            await playTrack(deviceId, accessToken, trackID);
+            await playTrack(deviceId, accessToken, trackID, state.position);
         }
         return spotifyPlayerInstance;
     }
 
-    return initializeSpotifyWebPlaybackSDK(accessToken, trackID, callbacks);
+    try{
+        await waitForSpotifySDK();
+        spotifyPlayerInstance = await initializeSpotifyWebPlaybackSDK(accessToken, trackID, callbacks);
+        return spotifyPlayerInstance;
+    }
+    catch (err){
+        console.error("Spotify Player 초기화 실패: ", err);
+        throw err;
+    }
+
+    //return initializeSpotifyWebPlaybackSDK(accessToken, trackID, callbacks);
 }
 
 export async function initializeSpotifyWebPlaybackSDK(accessToken, trackID, callbacks) {
@@ -20,13 +30,12 @@ export async function initializeSpotifyWebPlaybackSDK(accessToken, trackID, call
         throw new Error("Access Token이 필요합니다.");
     }
 
-    return new Promise((resolve, reject) => {
-        if (spotifyPlayerInstance) {
-            console.log("Spotify Player가 이미 초기화되었습니다.");
-            resolve(spotifyPlayerInstance);
-            return;
-        }
+    if (spotifyPlayerInstance) {
+        console.log("Spotify Player가 이미 초기화되었습니다.");
+        return spotifyPlayerInstance;
+    }
 
+    return new Promise((resolve, reject) => {
         if (!window.Spotify) {
             reject(new Error("Spotify SDK가 로드되지 않았습니다."));
             return;
@@ -82,16 +91,21 @@ export async function seekPosition(positionMs) {
 }
 
 // 특정 트랙을 재생하는 함수
-export async function playTrack(deviceId, accessToken, trackID) {
-    if (!deviceId || !accessToken || !trackID) {
+export async function playTrack(deviceId, accessToken, trackID, positionMs) {
+    if (!deviceId || !accessToken || !trackID || positionMs === undefined) {
         console.error("playTrack: 필요한 파라미터가 누락되었습니다.");
+        console.error("deviceId:", deviceId);
+        console.error("accessToken:", accessToken);
+        console.error("trackID:", trackID);
+        console.error("lastPosition:", positionMs);
         return;
     }
 
     try {
         const url = `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`;
         const body = JSON.stringify({
-            uris: [`spotify:track:${trackID}`], // 트랙 URI 배열
+            uris: [`spotify:track:${trackID}`],
+            position_ms: positionMs// 트랙 URI 배열
         });
 
         const response = await fetch(url, {
@@ -105,6 +119,9 @@ export async function playTrack(deviceId, accessToken, trackID) {
 
         if (response.ok) {
             console.log(`트랙 재생 성공: ${trackID}`);
+            
+            //setTimeout(seekPosition(lastPosition), 2000);
+            //seekPosition(lastPosition);
         } else {
             const errorText = await response.text();
             console.error(`트랙 재생 실패: ${errorText}`);
@@ -190,6 +207,7 @@ export async function savePlayerState() {
         return null;
     }
 }
+
 
 // Player 제거
 export function destroyPlayer() {

@@ -7,14 +7,14 @@ import { getAccessToken } from "./api.js";
 const searchBar = document.getElementById("search-bar");
 const suggestionsBox = document.getElementById("suggestions");
 
-if (!window.Spotify) {
-    const script = document.createElement("script");
-    script.src = "https://sdk.scdn.co/spotify-player.js";
-    script.async = true;
-    document.head.appendChild(script);
-} else {
-    console.log("Spotify SDK가 이미 로드되었습니다.");
-}
+// if (!window.Spotify) {
+//     const script = document.createElement("script");
+//     script.src = "https://sdk.scdn.co/spotify-player.js";
+//     script.async = true;
+//     document.head.appendChild(script);
+// } else {
+//     console.log("Spotify SDK가 이미 로드되었습니다.");
+// }
 
 // 검색창 및 추천 검색어 설정
 if (searchBar && suggestionsBox) {
@@ -76,7 +76,7 @@ async function fetchAndRenderSearchResults(query) {
                 trackID: track.id,
                 artistName: track.artists[0]?.name,
             };
-            playMusic(music,false, 0); // 임시 pip 테스트
+            playMusic(music, false, 0); // track box 클릭 시 처음부터 시작.
         });
 
         grid.appendChild(box);
@@ -101,7 +101,7 @@ async function playMusic(music, isReturned, lastPosition) {
         return;
     }
 
-    console.log("Playing:", music.trackName, "-ID:", music.trackID);
+    console.log("전달된 lastPosition:", lastPosition);
 
     if (!isReturned) {
         const state = await savePiPState(music.trackID, lastPosition);
@@ -112,8 +112,10 @@ async function playMusic(music, isReturned, lastPosition) {
     //goToDetail(music.trackID);
     
     await initializePiP(getAccessToken(), music, lastPosition);
-    updatePiP(music);
+    console.log("Playing:", music.trackName, "-ID:", music.trackID);
+    //updatePiP(music);
     showPiP();
+    console.log("last position: ", lastPosition);
 }
 
 // 검색 버튼 클릭 이벤트
@@ -126,26 +128,28 @@ searchButton.addEventListener("click", async () => {
 });
 
 // 초기 데이터 로드
-(async () => {
-    hidePiP();
+document.addEventListener("DOMContentLoaded", async () => {
 
     const urlParams = new URLSearchParams(window.location.search);
     const query = urlParams.get("query") || "한국 인디 밴드";
-    const fromDetail = urlParams.get("fromDetail") === "true";
-    const lastPosition = parseInt(urlParams.get("lastPosition"), 10) || 0;
+    const fromDetail = urlParams.get("fromDetail") || "true";
+    const lastPosition = urlParams.get("lastPosition") || 0;
     const trackID = urlParams.get("trackID");
-    const albumImage = urlParams.get("albumImage");
-    const trackName = urlParams.get("trackName");
-    const artistName = urlParams.get("artistName");
+    const albumImage = decodeURIComponent(urlParams.get("albumImage"));
+    const trackName = decodeURIComponent(urlParams.get("trackName"));
+    const artistName = decodeURIComponent(urlParams.get("artistName"));
 
     if (trackID) {
         const music = { albumImage, trackName, trackID, artistName };
         if(fromDetail)  playMusic(music, true, lastPosition);
         else    playMusic(music, false, 0);
-    } else {
-        await fetchAndRenderSearchResults(query);
     }
-})();
+
+    hidePiP();
+
+    fetchAndRenderSearchResults(query);
+
+});
 
 
 /*
