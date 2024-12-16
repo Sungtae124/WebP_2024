@@ -87,7 +87,16 @@ export async function updatePiP(music) {
     }
 
     if (pipTitle) {
-        pipTitle.textContent = `${decodeURIComponent(music.trackName)} - ${decodeURIComponent(music.artistName)}`;
+
+        const truncateText = (text, maxLength) => {
+            return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+        };
+    
+        const trackName = truncateText(decodeURIComponent(music.trackName || "Unknown Track"), 15);
+        const artistName = truncateText(decodeURIComponent(music.artistName || "Unknown Artist"), 15);
+    
+        pipTitle.textContent = `${trackName} - ${artistName}`;
+        //pipTitle.textContent = `${decodeURIComponent(music.trackName)} - ${decodeURIComponent(music.artistName)}`;
     }
 }
 

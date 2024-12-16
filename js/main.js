@@ -88,25 +88,25 @@ function renderMusicBoxes(tracks, albums, artists) {
     grid.innerHTML = ""; // 기존 박스 초기화
 
     // Large Box: 추천 앨범
-    if (albums.length > 0) {
-        const album = albums[0];
+    if (tracks.length > 0) {
+        const largeTrack = tracks[0];
         const largeBox = document.createElement("div");
         largeBox.className = "large-box";
         largeBox.innerHTML = `
-            <img src="${album.images[0]?.url}" alt="${album.name}" class="album-image">
+            <img src="${largeTrack.album.images[0]?.url}" alt="${largeTrack.name}" class="album-image">
             <div class="music-info">
-                <h4>${album.name}</h4>
-                <p>${album.artists[0]?.name}</p>
+                <h4>${largeTrack.name}</h4>
+                <p>${largeTrack.artists[0]?.name}</p>
             </div>
         `;
         largeBox.addEventListener("click", () => {
-            playMusic(new Music(album.images[0]?.url, album.name, "", "", album.artists[0]?.name));
+            playMusic(new Music(largeTrack.album.images[0]?.url, largeTrack.album.name, largeTrack.name, largeTrack.id, largeTrack.artists[0]?.name),false,0);
         });
         grid.appendChild(largeBox);
     }
 
     // Medium Boxes: 추천 곡
-    tracks.slice(0, 2).forEach((track) => {
+    tracks.slice(1, 3).forEach((track) => {
         const mediumBox = document.createElement("div");
         mediumBox.className = "medium-box";
         mediumBox.innerHTML = `
@@ -162,6 +162,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     hidePiP();
 
     const genre = urlParams.get("genre") || "한국 인디 밴드"; // 기본 검색어
+    console.log("genre: ",genre);
 
     const token = await getAccessTokenWithoutLogin();
     if (token) {
