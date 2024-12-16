@@ -1,6 +1,6 @@
 const clientId = "11238807f52543e4892bd1f06766aa34";
 const redirectUri = "http://127.0.0.1:5500/callback.html";
-const scope = "user-read-private user-read-email user-top-read streaming user-modify-playback-state user-read-playback-state playlist-modify-private playlist-modify-public playlist-read-private playlist-read-collaborative";
+const scope = "user-read-private user-read-email user-top-read streaming user-modify-playback-state user-read-playback-state playlist-modify-private playlist-modify-public playlist-read-private playlist-read-collaborative user-library-read user-library-modify";
 const state = "random_state_value";
 
 function login(){
