@@ -16,6 +16,7 @@ import {
     savePlayerState,
     
 } from './player.js';
+import { setupLoginPopup, showLoginPopup } from './main_login.js';
 
 let spotifyPlayer = null; // Spotify Player 인스턴스
 let deviceId = null; // Device ID 저장
@@ -29,7 +30,10 @@ async function initializePlayback(lastPosition) {
         if (!accessToken) {
             accessToken = getAccessToken();
             if (!accessToken) {
-                throw new Error("액세스 토큰을 가져오지 못했습니다.");
+                console.log("login need");
+                showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
+                return;
+                //throw new Error("액세스 토큰을 가져오지 못했습니다.");
             }
         }
 
@@ -77,6 +81,19 @@ async function returnToPreviousPage() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+    setupLoginPopup();
+    
+    // 로그인 여부 확인
+    accessToken = getAccessToken();
+    //console.log("AccessToken 확인:", accessToken);
+
+    if (!accessToken) {
+        console.log("로그인이 필요합니다. 팝업 표시");
+        showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
+        return; // 팝업이 표시된 상태에서는 초기화 진행 중단
+    }
+
     const sideButtons = document.querySelectorAll(".side-buttons button");
     const mainContainer = document.querySelector(".main-container");
 
@@ -124,7 +141,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
         accessToken = getAccessToken();
         if (!accessToken) {
-            throw new Error("액세스 토큰을 가져오지 못했습니다.");
+            console.log("로그인이 필요합니다. 팝업 표시");
+            showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
+            return; // 재생 로직 실행 중단
+            //throw new Error("액세스 토큰을 가져오지 못했습니다.");
         }
 
         const trackData = await fetchTrackDetails(trackID, accessToken);

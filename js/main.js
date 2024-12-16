@@ -28,24 +28,6 @@ if (searchBar && suggestionsBox) {
     console.error("검색창 또는 추천 검색어 박스가 초기화되지 않았습니다.");
 }
 
-// 로그인 팝업 설정
-document.addEventListener("DOMContentLoaded", () => {
-    setupLoginPopup(null, [".large-box", ".medium-box"]);
-
-    document.addEventListener("click", (e) => {
-        const target = e.target.closest(".large-box, .medium-box");
-        if (target) {
-            const isLoggedIn = getAccessToken(); // 임시 설정
-            if (!isLoggedIn) {
-                e.preventDefault();
-                showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
-            } else {
-                console.log("재생 시작");
-            }
-        }
-    });
-});
-
 function goToDetail(trackID) {
     if (!trackID) {
         console.error("Detail 페이지로 이동할 수 없습니다. 트랙 ID가 누락되었습니다.");
@@ -143,6 +125,7 @@ function renderMusicBoxes(tracks, albums, artists) {
 // 초기 검색 및 데이터 렌더링
 document.addEventListener("DOMContentLoaded", async () => {
     //await waitForSpotifySDK();
+    setupLoginPopup([".large-box", ".medium-box"]);
 
     // URL에서 장르 매개변수 읽기
     const urlParams = new URLSearchParams(window.location.search);

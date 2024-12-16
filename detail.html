@@ -30,6 +30,18 @@
             document.getElementById("login-button").addEventListener("click", login);
         </script>
     </div>
+    
+    <!-- 로그인 팝업 -->
+    <div id="login-popup" class="popup hidden">
+        <div class="popup-content">
+            <p id="login-message">음악을 재생하려면 로그인하세요.</p>
+            <div class="popup-buttons">
+                <button id="popup-login-button">로그인</button>
+                <button id="popup-cancel-button">취소</button>
+            </div>
+        </div>
+    </div>
+
     <div class="main-container">
         <div class="record-container">
             <div class="record">
@@ -61,6 +73,7 @@
     </div>
     <script type="module" src="/js/detail.js"></script>
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    <!-- <script type="module" src="/js/main_login.js"></script> -->
     
     <script>
         window.onSpotifyWebPlaybackSDKReady = () => {

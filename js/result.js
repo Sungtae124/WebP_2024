@@ -15,21 +15,6 @@ if (searchBar && suggestionsBox) {
     console.error("검색창 또는 추천 검색어 박스가 초기화되지 않았습니다.");
 }
 
-// 로그인 팝업 설정
-setupLoginPopup(null, [".large-box", ".medium-box"]);
-document.addEventListener("click", (e) => {
-    const target = e.target.closest(".large-box, .medium-box");
-    if (target) {
-        const isLoggedIn = getAccessToken();
-        if (!isLoggedIn) {
-            e.preventDefault();
-            showLoginPopup("음악을 재생하려면 로그인이 필요합니다.");
-        } else {
-            console.log("재생 시작");
-        }
-    }
-});
-
 // 검색 결과 렌더링 함수
 async function fetchAndRenderSearchResults(query) {
     const token = await getAccessTokenWithoutLogin();
@@ -118,6 +103,8 @@ searchButton.addEventListener("click", async () => {
 
 // 초기 데이터 로드
 document.addEventListener("DOMContentLoaded", async () => {
+
+    setupLoginPopup([".result-box"]);
 
     const urlParams = new URLSearchParams(window.location.search);
     const query = urlParams.get("query") || "한국 인디 밴드";
