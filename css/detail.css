@@ -163,11 +163,26 @@ body {
     will-change: transform;
 }
 
-#like-count {
-    flex-shrink: 0; /* 좋아요 수가 줄어들지 않도록 설정 */
-    margin-left: 10px;
-    text-align: center;
+
+.like-button {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px; /* 하트와 텍스트 간격 */
 }
+
+.like-button span {
+    display: inline-block;
+}
+
+.like-button:hover #heart-icon {
+    color: red; /* 호버 시 하트 색상 변경 */
+}
+
 
 /* 스크롤 애니메이션 */
 @keyframes scroll-title {

@@ -22,6 +22,7 @@ let deviceId = null; // Device ID 저장
 let accessToken = null;
 let trackID = null;
 let returnPage = null;
+let isLiked = false;
 
 // 재생 관련 초기화 함수
 async function initializePlayback(lastPosition) {
@@ -79,6 +80,8 @@ async function returnToPreviousPage() {
 document.addEventListener("DOMContentLoaded", async () => {
     const sideButtons = document.querySelectorAll(".side-buttons button");
     const mainContainer = document.querySelector(".main-container");
+    const heartIcon = document.getElementById("heart-icon"); // 좋아요 아이콘 요소 가져오기
+    const likeButton = document.getElementById("like-button"); // 좋아요 버튼 요소 가져오기
 
     let activePanel = null;
     let activeButton = null;
@@ -134,6 +137,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         await initializePlayback(0);
         updateTrackDetailsUI(trackData);
+
+         // 좋아요 초기화
+        isLiked = await checkIfLiked(trackID); // 좋아요 상태 확인
+        updateLikeButtonUI(heartIcon, isLiked); // 초기 UI 설정
+
+        // 좋아요 버튼 클릭 이벤트 설정
+        likeButton.addEventListener("click", () => toggleLike(heartIcon)); // 좋아요 버튼에 이벤트 추가
+
     } catch (error) {
         console.error("트랙 데이터 로드 중 오류 발생:", error);
     }
@@ -263,5 +274,77 @@ document.addEventListener("DOMContentLoaded", async () => {
         handlePanelTransition(newPanel, previousPanel, mainContainer); // 패널 전환 처리
         activePanel = newPanel;
         activeButton = button;
+    }
+
+    async function checkIfLiked(trackID) {
+        if (!accessToken) {
+            accessToken = getAccessToken();
+            if (!accessToken) {
+                console.error("액세스 토큰을 가져오지 못했습니다.");
+                return false;
+            }
+        }
+    
+        try {
+            const response = await fetch(`https://api.spotify.com/v1/me/tracks/contains?ids=${trackID}`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
+    
+            if (response.ok) {
+                const [liked] = await response.json();
+                return liked; // 좋아요 상태 반환
+            } else {
+                console.error("좋아요 상태 확인 실패:", response.statusText);
+                return false;
+            }
+        } catch (err) {
+            console.error("좋아요 상태 확인 중 오류:", err);
+            return false;
+        }
+    }
+    
+    // 좋아요 토글 함수
+    async function toggleLike(heartIcon) { // heartIcon을 매개변수로 전달받음
+        if (!accessToken) {
+            accessToken = getAccessToken();
+            if (!accessToken) {
+                console.error("액세스 토큰을 가져오지 못했습니다.");
+                return;
+            }
+        }
+    
+        if (!trackID) {
+            console.error("트랙 ID를 가져오지 못했습니다.");
+            return;
+        }
+    
+        try {
+            const url = `https://api.spotify.com/v1/me/tracks?ids=${trackID}`;
+            const method = isLiked ? "DELETE" : "PUT"; // 좋아요 추가/취소 결정
+            const response = await fetch(url, {
+                method,
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
+    
+            if (response.ok) {
+                isLiked = !isLiked; // 좋아요 상태 반전
+                updateLikeButtonUI(heartIcon, isLiked); // UI 업데이트 호출
+            } else {
+                console.error(`좋아요 처리 실패: ${response.status} ${response.statusText}`);
+            }
+        } catch (err) {
+            console.error("좋아요 처리 중 오류:", err);
+        }
+    }
+    
+    // 좋아요 버튼 UI 업데이트
+    function updateLikeButtonUI(heartIcon, isLiked) {
+        if (isLiked) {
+            heartIcon.textContent = "♥"; // 채워진 하트
+            heartIcon.style.color = "red"; // 빨간색으로 변경
+        } else {
+            heartIcon.textContent = "♡"; // 빈 하트
+            heartIcon.style.color = "black"; // 검정색으로 변경
+        }
     }
 });
