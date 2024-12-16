@@ -180,7 +180,7 @@ async function escapePiP() {
             artistName: encodeURIComponent(artistName),
         });
 
-        const returnUrl = `/detail.html?${params.toString()}`;
+        const returnUrl = `./detail.html?${params.toString()}`;
         console.log("Redirecting to:", returnUrl);
 
         // PiP 숨기기 및 페이지 이동
