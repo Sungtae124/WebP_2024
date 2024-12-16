@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Playmingo - Search Results</title>
-    <link rel="stylesheet" href="css/result_styles.css">
+    <link rel="stylesheet" href="./css/result_styles.css">
 </head>
 <body>
     <header>
@@ -33,18 +33,9 @@
     <div id="login-popup" class="popup hidden">
         <div class="popup-content">
             <p id="login-message">음악을 재생하려면 로그인하세요.</p>
-            <input type="text" id="username" placeholder="사용자 이름" />
-            <input type="password" id="password" placeholder="비밀번호" />
-            <div>
-                <button id="login-button">로그인</button>
-                <button id="cancel-button">취소</button>
-                <script type="module">
-                    import { login } from './js/auth.js';
-    
-                    // 버튼 클릭 시 login 함수 호출
-                    document.getElementById("login-button").addEventListener("click", login);
-                    </script>
-            </div>
+            <div class="popup-buttons">
+                <button id="popup-login-button">로그인</button>
+                <button id="popup-cancel-button">취소</button>
         </div>
     </div>
 
@@ -64,20 +55,10 @@
                 <audio id="audio-player" style="display: none;"></audio>
             </div>
         </div>
-        <!-- <div class="music-info">
-            <p>곡 제목 - 아티스트 이름</p>
-            <input type="range" class="progress-bar" min="0" max="100" value="0">
-        </div>
-        <div class="control-buttons">
-            <button class="pip-prev-button">⏮️</button>
-            <button class="pip-play-button">⏸️</button>
-            <button class="pip-next-button">⏭️</button>
-            <button class="escape-pip-button">⏫️</button>
-            <audio id="audio-player" style="display: none;"></audio>
-        </div> -->
     </div>
     
-    <script type="module" src="js/result.js"></script>
+    <script type="module" src="./js/result.js"></script>
+    <script type="module" src="./js/main_login.js"></script>
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
     
     <script>

@@ -1,22 +1,22 @@
 import { getAccessTokenWithoutLogin } from "./main_api.js";
 
 // 장르 데이터
-const genres = ["k-pop", "hip-hop", "jazz", "pop"];
+const genres = ["Kpop dance", "Korean hip-hop", "밴드", "Christmas"];
 
 // Spotify API에서 장르별 앨범 데이터를 가져오는 함수
-async function fetchAlbumsByGenre(genre, token) {
-    const url = `https://api.spotify.com/v1/search?q=genre:${genre}&type=album&limit=5`;
+async function fetchTracksByGenre(genre, token) {
+    const url = `https://api.spotify.com/v1/search?q=${genre}&type=track&limit=5`;
     try {
         const response = await fetch(url, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
-        if (!response.ok) throw new Error(`Failed to fetch albums for ${genre}`);
+        if (!response.ok) throw new Error(`Failed to fetch tracks for ${genre}`);
         const data = await response.json();
-        return data.albums.items.map((album) => ({
-            image: album.images[0]?.url || "/default/default-album.png",
-            name: album.name,
+        return data.tracks.items.map((track) => ({
+            image: track.album.images[0]?.url || "/default/default-album.png",
+            name: track.name,
         }));
     } catch (error) {
         console.error(error);
@@ -66,7 +66,7 @@ export async function renderGenreButtons() {
 
     for (const genre of genres) {
         // 장르별 앨범 데이터 가져오기
-        const albums = await fetchAlbumsByGenre(genre, token);
+        const albums = await fetchTracksByGenre(genre, token);
         if (!albums.length) {
             console.warn(`장르 ${genre}에 대한 앨범 데이터가 없습니다.`);
             continue;
