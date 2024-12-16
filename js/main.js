@@ -133,8 +133,8 @@ function renderMusicBoxes(tracks, albums, artists) {
             </div>
         `;
         smallBox.addEventListener("click", () => {
-            //playMusic(new Music(artist.images[0]?.url || "/default/default-artist.png", "", "", artist.name));
-            //여기에 아티스트 상세 페이지로 연결하는 기능 추가 필요
+            //아티스트 이름을 검색 키워드로 해서 검색결과 페이지에 전달.
+            window.location.href = `result.html?query=${encodeURIComponent(artist.name)}`;
         });
         grid.appendChild(smallBox);
     });
