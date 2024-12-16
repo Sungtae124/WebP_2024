@@ -18,13 +18,34 @@
     <div class="side-buttons">
         <button id="alb">앨범</button>
         <button id="rec">추천</button>
-        <button id="next">다음 트랙</button>
+        <!-- <button id="next">다음 트랙</button> playlist 페이지 이동 버튼 구현 예정-->
         <button id="art">아티스트</button>
+        <button id="login-button">로그인</button>
+        <button id="pip">이전으로</button>
+
+        <script type="module">
+            import { login } from './js/auth.js';
+    
+            // 버튼 클릭 시 login 함수 호출
+            document.getElementById("login-button").addEventListener("click", login);
+        </script>
     </div>
+    
+    <!-- 로그인 팝업 -->
+    <div id="login-popup" class="popup hidden">
+        <div class="popup-content">
+            <p id="login-message">음악을 재생하려면 로그인하세요.</p>
+            <div class="popup-buttons">
+                <button id="popup-login-button">로그인</button>
+                <button id="popup-cancel-button">취소</button>
+            </div>
+        </div>
+    </div>
+
     <div class="main-container">
         <div class="record-container">
             <div class="record">
-                <img id="album-cover" src="images/cover.jpg" alt="Album Cover" class="album-cover">
+                <img id="album-cover" src="./css/images/cover.jpg" alt="Album Cover" class="album-cover">
             </div>
         </div>
         <div class="song-info">
@@ -50,7 +71,15 @@
             </div>
         </div>
     </div>
-    <script src="https://sdk.scdn.co/spotify-player.js"></script>
     <script type="module" src="/js/detail.js"></script>
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    <!-- <script type="module" src="/js/main_login.js"></script> -->
+    
+    <script>
+        window.onSpotifyWebPlaybackSDKReady = () => {
+            console.log("Spotify Web Playback SDK 로드 완료");
+        };
+    </script>
+    
 </body>
 </html>

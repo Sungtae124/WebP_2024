@@ -16,7 +16,7 @@ async function loadKeys() {
 }
 
 // Access Token 발급 함수
-export async function getAccessToken() {
+export async function getAccessTokenWithoutLogin() {
     if (cachedAccessToken && tokenExpiryTime > Date.now()) {
         return cachedAccessToken; // 유효한 캐시된 토큰 반환
     }
@@ -40,6 +40,7 @@ export async function getAccessToken() {
         if (response.ok) {
             cachedAccessToken = data.access_token;
             tokenExpiryTime = Date.now() + data.expires_in * 1000;
+            //console.log(cachedAccessToken);
             return cachedAccessToken;
         } else {
             console.error("Access Token 발급 실패:", data);
@@ -101,6 +102,14 @@ export async function fetchSpotifySearchResults(query, token) {
 
         const data = await response.json();
 
+        // 전체 데이터 출력
+        console.log("Spotify Search API Data (전체):", data);
+
+        // 각각의 데이터 확인
+        console.log("검색 결과 - Tracks:", data.tracks?.items || []);
+        console.log("검색 결과 - Albums:", data.albums?.items || []);
+        console.log("검색 결과 - Artists:", data.artists?.items || []);
+
         // 검색 결과 정리
         return {
             tracks: data.tracks?.items || [],
@@ -138,6 +147,7 @@ export async function fetchSpotifySuggestions(query, token) {
         console.log("Spotify API 응답 데이터:", data);
         
         return data.tracks.items.map((track) => ({
+            trackID: track.id,
             name: track.name,
             artist: track.artists[0]?.name,
             albumImage: track.album.images[0]?.url || "/default/default-album.png",

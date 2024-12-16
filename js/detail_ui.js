@@ -20,10 +20,31 @@ export function updateTrackDetailsUI(trackData) {
 }
 
 // 재생 상태 UI 업데이트
-export function updatePlaybackUI(state) {
+export async function updatePlaybackUI(state) {
+    if (!state) {
+        console.warn("Player state가 null이거나 유효하지 않습니다.");
+        return;
+    }
+
     const { position, duration, paused } = state;
-    progressBar.value = (position / duration) * 100; //슬라이더 위치
-    playButton.textContent = paused ? '▶️' : '⏸️'; //버튼 텍스트 변경
+
+    // 슬라이더 위치 업데이트
+    if (progressBar && duration) {
+        progressBar.value = (position / duration) * 100; // 퍼센트 계산
+    }
+
+    // 재생 버튼 상태 업데이트
+    if (playButton) {
+        playButton.textContent = paused ? "▶️" : "⏸️"; // 일시 정지 또는 재생 아이콘
+    }
+
+    // 디버그 로그
+    console.log(
+        `Playback UI 업데이트: 
+        위치: ${position}ms, 
+        총 길이: ${duration}ms, 
+        상태: ${paused ? "일시 정지" : "재생 중"}`
+    );
 }
 
 // 패널 UI 생성

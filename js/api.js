@@ -9,11 +9,19 @@ export async function fetchSpotifyData(endpoint, accessToken){
         },
     });
 
-    if(!response.ok) throw new Error(`API 요청 실패: ${response.statusText}`)
+    if(!response.ok) {
+        if (response.status === 401) {
+            //logoutAndRedirect(); // 토큰 만료 시 로그아웃 처리
+            throw new Error("Unauthorized: 토큰이 만료되었거나 유효하지 않습니다!!");
+        }
+        throw new Error(`API 요청 실패: ${response.status} ${response.statusText}`);
+    }
+    //throw new Error(`API 요청 실패: ${response.statusText}`)
     return await response.json();
-    }catch{
-        console.error("네트워크 에러: ", error);
-        throw new Error("네트워크 에러.");
+    }catch (err) {
+        console.error("네트워크 에러: ", err.message);
+        throw err;
+        //throw new Error("네트워크 에러.");
     }
 }
 //트랙 정보 가져오기
