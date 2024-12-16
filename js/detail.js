@@ -72,7 +72,8 @@ async function returnToPreviousPage() {
             artistName: encodeURIComponent(state.artistName),
         });
 
-        const returnUrl = `${returnPage}?${params.toString()}`;
+        const returnUrl = `https://sungtae124.github.io/WebP_2024/index.html?${params.toString()}`;
+        
         console.log(returnUrl);
         // destroyPlayer(); // 필요 시 활성화
         window.location.href = returnUrl;
