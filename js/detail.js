@@ -76,7 +76,7 @@ async function returnToPreviousPage() {
 
         console.log(returnUrl);
         // destroyPlayer(); // 필요 시 활성화
-        window.location.href = returnUrl;
+        // window.location.href = returnUrl;
     } catch (error) {
         console.error("이전 페이지로 돌아가는 중 오류 발생:", error);
     }
