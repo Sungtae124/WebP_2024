@@ -64,8 +64,8 @@ function goToDetail(trackID) {
         console.error("Detail 페이지로 이동할 수 없습니다. 트랙 ID가 누락되었습니다.");
         return;
     }
-    const currentPage = `/result.html`;
-    const detailURL = `detail.html?trackID=${encodeURIComponent(trackID)}&returnPage=${encodeURIComponent(currentPage)}`;
+    const currentPage = `../result.html`;
+    const detailURL = `../detail.html?trackID=${encodeURIComponent(trackID)}&returnPage=${encodeURIComponent(currentPage)}`;
     window.location.href = detailURL; // 트랙 ID, return page를 포함해 Detail 페이지로 이동
 }
 
@@ -97,7 +97,7 @@ const searchButton = document.getElementById("search-button");
 searchButton.addEventListener("click", async () => {
     const query = searchBar.value.trim();
     if (query) {
-        window.location.href = `result.html?query=${encodeURIComponent(query)}`;
+        window.location.href = `../result.html?query=${encodeURIComponent(query)}`;
     }
 });
 

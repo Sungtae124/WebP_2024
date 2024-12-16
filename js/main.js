@@ -33,8 +33,8 @@ function goToDetail(trackID) {
         console.error("Detail 페이지로 이동할 수 없습니다. 트랙 ID가 누락되었습니다.");
         return;
     }
-    const currentPage = `/index.html`;
-    const detailURL = `detail.html?trackID=${encodeURIComponent(trackID)}&returnPage=${encodeURIComponent(currentPage)}`;
+    const currentPage = `../index.html`;
+    const detailURL = `../detail.html?trackID=${encodeURIComponent(trackID)}&returnPage=${encodeURIComponent(currentPage)}`;
     window.location.href = detailURL; // 트랙 ID, return page를 포함해 Detail 페이지로 이동
 }
 
@@ -116,7 +116,7 @@ function renderMusicBoxes(tracks, albums, artists) {
         `;
         smallBox.addEventListener("click", () => {
             //아티스트 이름을 검색 키워드로 해서 검색결과 페이지에 전달.
-            window.location.href = `result.html?query=${encodeURIComponent(artist.name)}`;
+            window.location.href = `../result.html?query=${encodeURIComponent(artist.name)}`;
         });
         grid.appendChild(smallBox);
     });

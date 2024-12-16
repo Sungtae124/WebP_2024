@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const urlParams = new URLSearchParams(window.location.search);
     trackID = urlParams.get("trackID") || "5WYgNDkw0VsDIZwfwQWlXp";
-    returnPage = urlParams.get("returnPage") || "/index.html";
+    returnPage = urlParams.get("returnPage") || "../index.html";
     const fromReturnPage = urlParams.get("fromReturnPage") || false;
     const lastPosition = fromReturnPage ? urlParams.get("lastPosition") || 0 : 0;
 
