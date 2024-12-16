@@ -17,7 +17,7 @@ function handleRedirectCallback(){
     const token = params.get("access_token");
     if(token){
         localStorage.setItem("spotify_token", token);
-        window.location.href = "/index.html"    //임시 수정
+        window.location.href = "https://sungtae124.github.io/WebP_2024/index.html"    //임시 수정
     }
 }
 
