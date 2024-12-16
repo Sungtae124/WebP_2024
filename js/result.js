@@ -64,7 +64,7 @@ function goToDetail(trackID) {
         console.error("Detail 페이지로 이동할 수 없습니다. 트랙 ID가 누락되었습니다.");
         return;
     }
-    const currentPage = `./result.html`;
+    const currentPage = `https://sungtae124.github.io/WebP_2024/index.html`;
     const detailURL = `./detail.html?trackID=${encodeURIComponent(trackID)}&returnPage=${encodeURIComponent(currentPage)}`;
     window.location.href = detailURL; // 트랙 ID, return page를 포함해 Detail 페이지로 이동
 }

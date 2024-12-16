@@ -72,8 +72,8 @@ async function returnToPreviousPage() {
             artistName: encodeURIComponent(state.artistName),
         });
 
-        const returnUrl = `https://sungtae124.github.io/WebP_2024/index.html?${params.toString()}`;
-        
+        const returnUrl = `${returnPage}?${params.toString()}`;
+
         console.log(returnUrl);
         // destroyPlayer(); // 필요 시 활성화
         window.location.href = returnUrl;
@@ -106,7 +106,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const urlParams = new URLSearchParams(window.location.search);
     trackID = urlParams.get("trackID") || "5WYgNDkw0VsDIZwfwQWlXp";
-    returnPage = urlParams.get("returnPage") || "./index.html";
+    returnPage = urlParams.get("returnPage") || `https://sungtae124.github.io/WebP_2024/index.html`;
+
     const fromReturnPage = urlParams.get("fromReturnPage") || false;
     const lastPosition = fromReturnPage ? urlParams.get("lastPosition") || 0 : 0;
 
